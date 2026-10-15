@@ -1,0 +1,19 @@
+# Local secrets and their source requirement file.
+.env
+.env.*
+!.env.example
+/项目要求.txt
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+
+# Local runtime data, logs, and generated build files.
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.log
+node_modules/
+target/
+dist/
+.idea/
