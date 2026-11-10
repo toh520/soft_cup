@@ -1,0 +1,912 @@
+/* 食堂以 AI 推荐区为视觉重心，菜品与购物车使用不同层级，避免所有内容堆成同类卡片。 */
+.canteen-page {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.cart-jump {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 10px 13px;
+  background: #fff;
+}
+.cart-jump > span {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 50%;
+  color: #fff;
+  background: #2848a5;
+  font-size: 10px;
+}
+.ai-dining-hero {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 284px;
+  padding: 32px 44px;
+  border-radius: 18px;
+  background: #253f8d;
+  color: #fff;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+.ai-feature-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #becdf3;
+  font-size: 10px;
+  margin-bottom: 18px;
+}
+.ai-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+.ai-hero-copy h2 {
+  margin: 0 0 14px;
+  font-family: var(--heading-font);
+  font-size: 33px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 2px;
+}
+.ai-hero-copy > p {
+  font-size: 11px;
+  color: #b6c5eb;
+  line-height: 2;
+  margin-bottom: 22px;
+}
+.ai-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+}
+.ai-generate {
+  background: #f2d06b;
+  color: #344371;
+  border: 0;
+  padding: 13px 20px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.ai-generate:hover {
+  background: #ffe391;
+}
+.ai-hero-actions > span {
+  color: #aebfe8;
+  font-size: 10px;
+}
+.ai-hero-art {
+  position: absolute;
+  width: 345px;
+  right: 50px;
+  top: 14px;
+  transform: rotate(-7deg);
+}
+.ai-hero-art .dish-artwork {
+  display: block;
+  width: 100%;
+}
+.plate-caption {
+  display: block;
+  margin-top: -5px;
+  text-align: center;
+  color: #abbfe9;
+  font-size: 10px;
+  transform: rotate(7deg);
+}
+.profile-nudge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+  margin-bottom: 25px;
+  background: #eaf0fb;
+  border-radius: 10px;
+  color: #627aa8;
+}
+.profile-nudge > svg {
+  flex-shrink: 0;
+}
+.profile-nudge p {
+  margin: 0;
+  flex: 1;
+}
+.profile-nudge strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #506588;
+}
+.profile-nudge p > span {
+  display: block;
+  color: #8594ad;
+  font-size: 10px;
+  margin-top: 4px;
+}
+.profile-nudge .button {
+  font-size: 10px;
+  padding: 9px 12px;
+  background: #fff;
+  white-space: nowrap;
+}
+.recommendation-wait {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+  padding: 21px 25px;
+  border: 1px dashed #bcc9e9;
+  border-radius: 12px;
+}
+.recommendation-wait strong {
+  font-weight: 500;
+  font-size: 12px;
+}
+.recommendation-wait p {
+  font-size: 10px;
+  color: #8594ad;
+  margin: 5px 0 0;
+}
+.waiting-orbit {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  border: 2px solid #d2ddf1;
+  border-top-color: #607db8;
+  border-radius: 50%;
+  animation: orbit 1.5s linear infinite;
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.recommendation-section {
+  margin: 32px 0 36px;
+}
+.recommendation-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6681b2;
+  font-size: 10px;
+  margin-bottom: 9px;
+}
+.recommendation-heading h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 500;
+}
+.recommendation-heading > p {
+  margin: 0;
+  color: #6e7d94;
+  font-size: 10px;
+}
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.meal-card {
+  padding: 22px;
+  border: 1px solid #dce4f4;
+  background: #fff;
+  border-radius: 13px;
+}
+.meal-plan-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.plan-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #7e91b5;
+  font-size: 10px;
+}
+.meal-plan-energy {
+  color: #6e7d94;
+  font-size: 9px;
+}
+.meal-plan-energy b {
+  color: #354e80;
+  font-size: 20px;
+  font-weight: 600;
+}
+.meal-card > h3 {
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 9px;
+}
+.meal-reason {
+  color: #6f7d94;
+  font-size: 12px;
+  line-height: 1.9;
+  min-height: 54px;
+  margin-bottom: 13px;
+}
+.meal-plan-dishes {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.meal-plan-dishes li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f2f8;
+}
+.meal-plan-dishes span {
+  flex-shrink: 0;
+  color: #7e95a4;
+  background: #f0f5f6;
+  border-radius: 3px;
+  padding: 3px 5px;
+  font-size: 8px;
+}
+.meal-plan-dishes strong {
+  font-weight: 400;
+  font-size: 12px;
+}
+.meal-plan-dishes small {
+  margin-left: auto;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.meal-plan-macros {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 16px 0;
+  color: #6f7d94;
+  font-size: 10px;
+}
+.select-plan {
+  background: #edf1fc;
+  color: #4966a5;
+  border-color: #e7ecf7;
+  padding: 10px 14px;
+  font-size: 11px;
+}
+.select-plan:hover {
+  background: #e2e9fb;
+}
+.canteen-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 25px;
+  align-items: start;
+  margin-top: 31px;
+}
+.menu-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 21px;
+}
+.menu-heading h2 {
+  font-size: 19px;
+  margin-bottom: 7px;
+}
+.menu-heading p {
+  font-size: 12px;
+  color: #6b7890;
+  margin: 0;
+}
+.menu-heading .text-button {
+  font-size: 11px;
+  color: #8193b0;
+}
+.menu-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.category-tabs button {
+  padding: 8px 13px;
+  background: transparent;
+  border-color: transparent;
+  font-size: 10px;
+  color: #66758e;
+  border-radius: 7px;
+}
+.category-tabs button.selected {
+  background: #2848a5;
+  color: #fff;
+}
+.menu-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  width: 170px;
+  padding: 0 10px;
+  color: #9aa6b9;
+  border: 1px solid #e0e5ef;
+  border-radius: 7px;
+  background: #fff;
+}
+.menu-search input {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 9px 0;
+  font-size: 10px;
+}
+.dish-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 17px;
+}
+.dish-card {
+  background: #fff;
+  border: 1px solid #e8ecf4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dish-picture {
+  background: #eef2ea;
+  position: relative;
+  height: 137px;
+  overflow: hidden;
+}
+.dish-picture.staple {
+  background: #f4f0e5;
+}
+.dish-picture.protein {
+  background: #f4ece9;
+}
+.dish-picture .dish-artwork {
+  display: block;
+  width: 100%;
+  height: 146px;
+}
+.vegetarian-tag {
+  position: absolute;
+  top: 11px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  color: #59836a;
+  background: #ffffffd9;
+  border-radius: 4px;
+  font-size: 8px;
+}
+.dish-selected {
+  position: absolute;
+  bottom: 8px;
+  right: 9px;
+  padding: 4px 7px;
+  font-size: 8px;
+  background: #2848a5;
+  color: #fff;
+  border-radius: 4px;
+}
+.dish-card-body {
+  padding: 15px 14px 12px;
+}
+.dish-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+.dish-portion {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b7890;
+  margin-bottom: 6px;
+}
+.dish-portion > span {
+  color: #687d9a;
+  white-space: nowrap;
+}
+.dish-ingredients {
+  color: #748198;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.dish-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.dish-card-footer > span {
+  font-size: 10px;
+  color: #6d7d97;
+}
+button.add-dish {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #fff;
+  background: #2848a5;
+  border: 0;
+  border-radius: 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+button.add-dish:hover {
+  background: #4663b6;
+}
+.canteen-cart {
+  position: sticky;
+  top: 22px;
+  background: #fff;
+  border: 1px solid #e4e9f3;
+  border-radius: 14px;
+  padding: 23px 22px 19px;
+  scroll-margin-top: 20px;
+  box-shadow: 0 6px 25px #243c7104;
+}
+.cart-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cart-title-icon {
+  color: #607bad;
+  display: grid;
+  place-items: center;
+}
+.cart-heading h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cart-count {
+  margin-left: auto;
+  font-size: 10px;
+  color: #5874af;
+  background: #edf1fc;
+  border-radius: 5px;
+  padding: 4px 7px;
+}
+.cart-source {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 42px;
+  padding-left: 30px;
+  color: #748098;
+  font-size: 11px;
+  border-bottom: 1px solid #edf1f7;
+}
+.cart-source button {
+  font-size: 9px;
+  color: #8d9bb4;
+}
+.cart-empty {
+  padding: 34px 0 28px;
+  text-align: center;
+}
+.empty-plate {
+  display: grid;
+  place-items: center;
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 18px;
+  background: #f7f8fb;
+  border: 1px solid #eceff5;
+  border-radius: 50%;
+  color: #b5bfd3;
+  box-shadow: inset 0 0 0 7px #fff;
+}
+.cart-empty h3 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #7d8ba5;
+  margin-bottom: 7px;
+}
+.cart-empty p {
+  font-size: 11px;
+  color: #77849b;
+  margin: 0;
+}
+.cart-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.cart-items li {
+  padding: 17px 0 15px;
+  border-bottom: 1px solid #f0f2f7;
+}
+.cart-item-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+.cart-item-title strong {
+  font-weight: 500;
+  font-size: 13px;
+}
+button.remove-dish {
+  border: 0;
+  color: #b0bbce;
+  padding: 0;
+  font-size: 17px;
+  background: transparent;
+  width: 24px;
+  height: 24px;
+}
+.cart-item-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 10px;
+}
+.cart-item-detail small {
+  font-size: 11px;
+  color: #738098;
+}
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quantity-control button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #e4e9f3;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #6b7ca1;
+}
+.quantity-control span {
+  font-size: 11px;
+  min-width: 10px;
+  text-align: center;
+  color: #526789;
+}
+.cart-nutrition {
+  padding: 20px 0;
+}
+.cart-energy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cart-energy > span {
+  font-size: 11px;
+  color: #8b9ab2;
+}
+.cart-energy strong {
+  font-size: 25px;
+  font-weight: 600;
+  color: #364e7e;
+}
+.cart-energy small {
+  font-size: 9px;
+  color: #91a1bd;
+  font-weight: 400;
+}
+.cart-macros {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+  font-size: 8px;
+  color: #a1aec4;
+}
+.cart-macros b {
+  display: block;
+  margin-top: 5px;
+  color: #7186a8;
+  font-weight: 500;
+  font-size: 10px;
+}
+.cart-bottom {
+  margin-top: 15px;
+}
+.checkout-button {
+  justify-content: space-between;
+  padding: 12px 17px;
+  font-size: 12px;
+}
+.cart-bottom p {
+  font-size: 10px;
+  text-align: center;
+  margin: 10px 0 0;
+  color: #78859b;
+}
+.canteen-cart .notice {
+  font-size: 10px;
+  padding: 11px 12px;
+}
+.canteen-footnote {
+  display: flex;
+  align-items: start;
+  gap: 7px;
+  margin: 30px 0 0;
+  font-size: 10px;
+  color: #6f7d94;
+  line-height: 1.9;
+}
+.canteen-footnote svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+@media (min-width: 1600px) {
+  .ai-dining-hero {
+    min-height: 310px;
+  }
+  .ai-hero-art {
+    width: 380px;
+    right: 85px;
+  }
+  .canteen-layout {
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 30px;
+  }
+  .dish-picture {
+    height: 165px;
+  }
+  .dish-picture .dish-artwork {
+    height: 177px;
+  }
+}
+@media (max-width: 1250px) {
+  .dish-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ai-hero-art {
+    width: 280px;
+    right: 10px;
+    top: 30px;
+  }
+  .ai-hero-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: start;
+  }
+  .ai-hero-copy h2 {
+    font-size: 29px;
+  }
+  .ai-dining-hero {
+    padding: 28px 32px;
+  }
+  .meal-card {
+    padding: 17px;
+  }
+  .meal-grid {
+    gap: 13px;
+  }
+  .canteen-layout {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    gap: 21px;
+  }
+  .canteen-cart {
+    padding: 22px 18px 17px;
+  }
+}
+@media (max-width: 1000px) {
+  .canteen-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .canteen-cart {
+    position: static;
+  }
+  .dish-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ai-hero-art {
+    width: 240px;
+    right: -15px;
+    top: 45px;
+    opacity: 0.9;
+  }
+  .ai-hero-copy {
+    max-width: 75%;
+  }
+  .ai-hero-copy h2 {
+    font-size: 28px;
+  }
+  .meal-grid {
+    grid-template-columns: 1fr;
+  }
+  .meal-card {
+    padding: 22px;
+  }
+  .meal-reason {
+    min-height: 0;
+  }
+  .recommendation-heading {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+@media (max-width: 720px) {
+  .canteen-page .page-heading {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .canteen-page .page-heading .muted {
+    max-width: 315px;
+  }
+  .cart-jump {
+    padding: 8px 11px;
+    font-size: 10px;
+  }
+  .cart-jump > svg {
+    width: 15px;
+  }
+  .ai-dining-hero {
+    min-height: 300px;
+    padding: 25px 24px;
+    border-radius: 13px;
+  }
+  .ai-hero-copy {
+    max-width: 100%;
+  }
+  .ai-hero-copy h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  .ai-feature-label {
+    margin-bottom: 15px;
+    font-size: 9px;
+  }
+  .ai-hero-copy > p {
+    font-size: 10px;
+    margin-bottom: 24px;
+    max-width: 230px;
+  }
+  .ai-hero-art {
+    width: 180px;
+    top: 57px;
+    right: -35px;
+    opacity: 0.55;
+  }
+  .plate-caption {
+    display: none;
+  }
+  .ai-hero-actions {
+    gap: 10px;
+  }
+  .ai-generate {
+    padding: 13px 16px;
+    font-size: 11px;
+  }
+  .ai-hero-actions > span {
+    font-size: 9px;
+  }
+  .profile-nudge {
+    padding: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .profile-nudge p {
+    flex-basis: calc(100% - 30px);
+  }
+  .profile-nudge .button {
+    margin-left: 30px;
+  }
+  .recommendation-heading h2 {
+    font-size: 18px;
+  }
+  .menu-heading h2 {
+    font-size: 18px;
+  }
+  .menu-tools {
+    gap: 13px;
+  }
+  .menu-search {
+    width: 100%;
+  }
+  .category-tabs {
+    width: 100%;
+    gap: 6px;
+  }
+  .category-tabs button {
+    flex: 1;
+    font-size: 10px;
+    padding: 9px;
+  }
+  .dish-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+  .dish-picture {
+    height: 117px;
+  }
+  .dish-picture .dish-artwork {
+    height: 128px;
+  }
+  .dish-card-body {
+    padding: 14px 11px 11px;
+  }
+  .dish-card h3 {
+    font-size: 13px;
+  }
+  .dish-portion {
+    font-size: 10px;
+  }
+  .dish-ingredients {
+    font-size: 9px;
+  }
+  .dish-card-footer > span {
+    font-size: 9px;
+  }
+  .canteen-cart {
+    padding: 22px;
+  }
+  .cart-title-icon {
+    color: #5c77ad;
+  }
+  .cart-heading h2 {
+    font-size: 16px;
+  }
+  .cart-items {
+    max-height: none;
+  }
+  .cart-item-title strong {
+    font-size: 13px;
+  }
+  .cart-item-detail small {
+    font-size: 10px;
+  }
+  .quantity-control button {
+    width: 30px;
+    height: 30px;
+  }
+  .cart-bottom p {
+    font-size: 9px;
+  }
+  .cart-source {
+    font-size: 10px;
+  }
+  .cart-macros {
+    font-size: 10px;
+  }
+  .cart-macros b {
+    font-size: 12px;
+  }
+  .cart-energy > span {
+    font-size: 12px;
+  }
+  .canteen-footnote {
+    font-size: 9px;
+  }
+}

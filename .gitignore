@@ -17,3 +17,7 @@ node_modules/
 target/
 dist/
 .idea/
+
+test-results/
+playwright-report/
+/code/backend/data/

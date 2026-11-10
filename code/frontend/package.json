@@ -1,0 +1,23 @@
+{
+  "name": "campus-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "format": "prettier --write src tests *.js *.json index.html",
+    "format:check": "prettier --check src tests *.js *.json index.html",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "vue": "3.5.44",
+    "vue-router": "4.5.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.0",
+    "@vitejs/plugin-vue": "6.0.1",
+    "prettier": "3.6.2",
+    "vite": "7.3.7"
+  }
+}

@@ -1,0 +1,11 @@
+# 复制为 application-local.properties；从 code/backend 工作目录启动时自动读取。
+llm.api-key=
+llm.timeout-seconds=60
+embedding.base-url=
+embedding.model=
+embedding.api-key=
+embedding.dimensions=0
+# 根据真实正例、无关问题及相似但缺答案问题校准后填写 [-1,1]。
+rag.min-similarity=
+# 仅本地课设演示默认管理员密码；首次建库时生效，不覆盖已有账号。
+campus.admin-password=123456

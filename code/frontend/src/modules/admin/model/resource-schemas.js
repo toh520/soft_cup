@@ -1,0 +1,140 @@
+const field = (key, label, type = "text", extra = {}) => ({
+  key,
+  label,
+  type,
+  ...extra,
+});
+export const schemas = {
+  books: {
+    title: "图书管理",
+    description: "维护书目与当前可借数量，已有借阅历史的图书不能删除。",
+    columns: [
+      ["title", "书名"],
+      ["author", "作者"],
+      ["availableCount", "可借数量"],
+    ],
+    fields: [
+      field("title", "书名"),
+      field("author", "作者"),
+      field("summary", "内容简介", "textarea"),
+      field("availableCount", "可借数量", "number", { min: 0, step: 1 }),
+    ],
+    defaults: { title: "", author: "", summary: "", availableCount: 1 },
+  },
+  schedules: {
+    title: "班级课表",
+    description: "固定每周循环，同班级同一天的课程时间不能重叠。",
+    columns: [
+      ["courseName", "课程"],
+      ["teacher", "教师"],
+      ["weekday", "星期"],
+      ["startTime", "开始"],
+      ["endTime", "结束"],
+      ["classroom", "教室"],
+    ],
+    fields: [
+      field("courseName", "课程名称"),
+      field("teacher", "教师"),
+      field("weekday", "星期", "select", {
+        options: [
+          [1, "周一"],
+          [2, "周二"],
+          [3, "周三"],
+          [4, "周四"],
+          [5, "周五"],
+          [6, "周六"],
+          [7, "周日"],
+        ],
+      }),
+      field("startTime", "开始时间", "time"),
+      field("endTime", "结束时间", "time"),
+      field("classroom", "教室"),
+    ],
+    defaults: {
+      classId: 1,
+      courseName: "",
+      teacher: "",
+      weekday: 1,
+      startTime: "09:00",
+      endTime: "10:35",
+      classroom: "",
+    },
+  },
+  dishes: {
+    title: "食堂菜品",
+    description: "按每份录入营养。订单引用过的菜品请下架，保留历史。",
+    columns: [
+      ["name", "菜品"],
+      ["category", "类别"],
+      ["energyKcal", "能量 kcal"],
+      ["isVegetarian", "素食"],
+      ["isAvailable", "供应"],
+    ],
+    fields: [
+      field("name", "菜品名称"),
+      field("category", "类别", "select", {
+        options: [
+          ["staple", "主食"],
+          ["protein", "蛋白类"],
+          ["vegetable", "蔬菜"],
+        ],
+      }),
+      field("portionG", "每份重量 g", "number", { min: 0.1 }),
+      field("energyKcal", "每份能量 kcal", "number", { min: 0.1 }),
+      field("proteinG", "蛋白质 g", "number", { min: 0 }),
+      field("fatG", "脂肪 g", "number", { min: 0 }),
+      field("carbohydrateG", "碳水化合物 g", "number", { min: 0 }),
+      field("ingredientTags", "食材与过敏原（顿号分隔）", "list"),
+      field("isVegetarian", "是否素食", "checkbox"),
+      field("isAvailable", "是否供应", "checkbox"),
+    ],
+    defaults: {
+      name: "",
+      category: "staple",
+      portionG: 250,
+      energyKcal: 300,
+      proteinG: 8,
+      fatG: 2,
+      carbohydrateG: 60,
+      ingredientTags: [],
+      isVegetarian: true,
+      isAvailable: true,
+    },
+  },
+  "knowledge-entries": {
+    title: "校园知识",
+    description: "保存时自动生成向量。资料与向量同步成功后才能被检索。",
+    columns: [
+      ["title", "标题"],
+      ["category", "分类"],
+      ["indexStatus", "索引状态"],
+    ],
+    fields: [
+      field("title", "资料标题"),
+      field("category", "分类", "select", {
+        options: [
+          ["rule", "学校规章"],
+          ["course", "课程信息"],
+          ["activity", "校园活动"],
+          ["other", "其他"],
+        ],
+      }),
+      field("content", "资料正文（不超过 4000 字）", "textarea", {
+        maxLength: 4000,
+      }),
+    ],
+    defaults: { title: "", category: "rule", content: "", revision: null },
+  },
+};
+export const labels = {
+  staple: "主食",
+  protein: "蛋白类",
+  vegetable: "蔬菜",
+  rule: "学校规章",
+  course: "课程信息",
+  activity: "校园活动",
+  other: "其他",
+  pending: "待审批",
+  approved: "已通过",
+  rejected: "已拒绝",
+};
