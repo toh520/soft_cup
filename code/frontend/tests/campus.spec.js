@@ -1,3 +1,4 @@
+import { tabApi } from "./tab-api.js";
 import { test, expect } from "@playwright/test";
 
 async function register(page) {
@@ -46,7 +47,7 @@ test("学生注册、资料、独立窗口、缺配置反馈和退出", async ({
     ),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "生成三个膳食方案" }),
+    page.getByRole("button", { name: "生成膳食方案" }),
   ).toBeDisabled();
   await page.locator("nav").getByRole("link", { name: "个人中心" }).click();
   await page.getByLabel("年龄（岁）").fill("22");
@@ -59,7 +60,7 @@ test("学生注册、资料、独立窗口、缺配置反馈和退出", async ({
     page.getByText("个人资料已保存。可返回营养食堂重新推荐。"),
   ).toBeVisible();
   await page.getByRole("link", { name: "智能营养食堂" }).click();
-  await page.getByRole("button", { name: "生成三个膳食方案" }).click();
+  await page.getByRole("button", { name: "生成膳食方案" }).click();
   await expect(page.getByRole("alert")).toContainText("模型服务尚未配置");
   await expect(
     page.getByRole("heading", { name: "本餐购物车", exact: true }),
@@ -89,16 +90,16 @@ test("管理数据修改、学生课表同步、借还与审批", async ({ brows
   await expect(admin.getByText("数据已保存")).toBeVisible();
   // 通过同一浏览器会话的真实 API 创建待确认内容，UI 验证其落库与后续操作。
   const books = await (
-    await student.request.get(
+    await tabApi(student).get(
       `/api/books?query=${encodeURIComponent(bookName)}`,
     )
   ).json();
   const draft = await (
-    await student.request.post(`/api/books/${books[0].id}/draft`, { data: {} })
+    await tabApi(student).post(`/api/books/${books[0].id}/draft`, { data: {} })
   ).json();
   expect(
     (
-      await student.request.post("/api/borrow-records/confirm", {
+      await tabApi(student).post("/api/borrow-records/confirm", {
         data: { token: draft.token },
       })
     ).ok(),
@@ -112,13 +113,13 @@ test("管理数据修改、学生课表同步、借还与审批", async ({ brows
   const tomorrow = new Date(Date.now() + 2 * 86400000).toISOString();
   const after = new Date(Date.now() + 3 * 86400000).toISOString();
   const leave = await (
-    await student.request.post("/api/leave-requests/draft", {
+    await tabApi(student).post("/api/leave-requests/draft", {
       data: { startAt: tomorrow, endAt: after, reason: "浏览器审批验证" },
     })
   ).json();
   expect(
     (
-      await student.request.post("/api/leave-requests/confirm", {
+      await tabApi(student).post("/api/leave-requests/confirm", {
         data: { token: leave.token },
       })
     ).ok(),

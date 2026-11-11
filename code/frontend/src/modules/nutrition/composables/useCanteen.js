@@ -4,10 +4,13 @@ import { cartApi } from "../../cart/api/cart-api.js";
 
 /** 推荐与购物车独立等待；生成只展示方案，选用才替换服务端购物车。 */
 export function useCanteen() {
-  const readiness = ref(null),
+  const requirements = ref(""),
+    readiness = ref(null),
     dishes = ref([]),
     plans = ref([]),
     target = ref(null),
+    requirementsSummary = ref(""),
+    recommendationNotice = ref(""),
     cart = ref({ empty: true }),
     loading = ref(true),
     recommending = ref(false),
@@ -44,12 +47,16 @@ export function useCanteen() {
     recommending.value = true;
     error.value = "";
     plans.value = [];
+    requirementsSummary.value = "";
+    recommendationNotice.value = "";
     try {
       readiness.value = await nutritionApi.readiness();
       if (!readiness.value.ready) return;
-      const result = await nutritionApi.recommend();
+      const result = await nutritionApi.recommend(requirements.value.trim());
       plans.value = result.plans;
       target.value = result.targetEnergyKcal;
+      requirementsSummary.value = result.requirementsSummary;
+      recommendationNotice.value = result.notice;
     } catch (e) {
       error.value = e.message;
     } finally {
@@ -118,10 +125,13 @@ export function useCanteen() {
     }
   }
   return {
+    requirements,
     readiness,
     dishes,
     plans,
     target,
+    requirementsSummary,
+    recommendationNotice,
     cart,
     loading,
     recommending,

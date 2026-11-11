@@ -2,10 +2,8 @@ package com.toh520.campus.module.auth.controller;
 
 import com.toh520.campus.module.auth.dto.AuthRequests;
 import com.toh520.campus.module.auth.service.AuthService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Map;
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,28 +27,15 @@ public class AuthController {
   }
 
   @PostMapping("/auth/login")
-  Object login(@Valid @RequestBody AuthRequests.Login request, HttpServletResponse response) {
+  Object login(@Valid @RequestBody AuthRequests.Login request) {
     String token = auth.login(request);
-    response.addHeader("Set-Cookie", cookie(token, 28800));
-    return Map.of("role", auth.authenticate(token).role);
+    // 新凭据由当前标签页保存，不能再回退到共享 Cookie 鉴权。
+    return Map.of("role", auth.authenticate(token).role, "token", token);
   }
 
   @PostMapping("/auth/logout")
-  Object logout(
-      @CookieValue(name = "CAMPUS_SESSION", required = false) String token,
-      HttpServletResponse response) {
+  Object logout(@RequestAttribute("sessionToken") String token) {
     auth.logout(token);
-    response.addHeader("Set-Cookie", cookie("", 0));
     return Map.of("message", "已退出");
-  }
-
-  private String cookie(String value, long seconds) {
-    return ResponseCookie.from("CAMPUS_SESSION", value)
-        .httpOnly(true)
-        .sameSite("Strict")
-        .path("/api")
-        .maxAge(seconds)
-        .build()
-        .toString();
   }
 }

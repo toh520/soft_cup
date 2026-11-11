@@ -3,15 +3,24 @@ import { ref, nextTick } from "vue";
 import PageHeading from "../../../shared/components/PageHeading.vue";
 import FeedbackMessage from "../../../shared/components/FeedbackMessage.vue";
 import { useKnowledgeConversation } from "../composables/useKnowledgeConversation.js";
+import AppIcon from "../../../shared/components/AppIcon.vue";
+import { sessionGeneration } from "../../../shared/api/tab-session.js";
 const { messages, busy, error, send, clear } = useKnowledgeConversation();
 const text = ref(""),
   list = ref(null);
 async function submit(value = text.value) {
-  if (!value.trim()) return;
+  if (busy.value || !value.trim()) return;
+  const generation = sessionGeneration();
   text.value = "";
-  await send(value);
+  const sent = await send(value);
+  if (sent === false && generation === sessionGeneration()) text.value = value;
   await nextTick();
-  list.value?.scrollTo({ top: list.value.scrollHeight, behavior: "smooth" });
+  list.value?.scrollTo({
+    top: list.value.scrollHeight,
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth",
+  });
 }
 </script>
 <template>
@@ -21,8 +30,14 @@ async function submit(value = text.value) {
     eyebrow="ANSWERS WITH SOURCES"
     ><button :disabled="busy" @click="clear">新对话</button></PageHeading
   >
-  <section class="chat-panel">
-    <div ref="list" class="message-list">
+  <section class="chat-panel knowledge-panel">
+    <div
+      ref="list"
+      class="message-list"
+      role="log"
+      aria-live="polite"
+      aria-label="对话记录"
+    >
       <div v-if="!messages.length" class="chat-welcome">
         <div class="assistant-symbol knowledge-symbol">问</div>
         <h2>关于校园，你想了解什么？</h2>
@@ -30,8 +45,8 @@ async function submit(value = text.value) {
           规章制度、课程介绍、活动资讯。<br />资料里没有的内容，会明确告诉你。
         </p>
         <div class="suggestions">
-          <button @click="submit('宿舍限电多少瓦？')">宿舍用电规定 ↗</button
-          ><button @click="submit('书能借多久？')">图书借阅期限 ↗</button>
+          <button @click="submit('宿舍限电多少瓦？')">宿舍用电规定</button
+          ><button @click="submit('书能借多久？')">图书借阅期限</button>
         </div>
       </div>
       <article
@@ -64,7 +79,7 @@ async function submit(value = text.value) {
         required
         maxlength="1000"
         :disabled="busy"
-      /><button class="primary" :disabled="busy || !text.trim()">提问 ↑</button>
+      /><button class="primary" :disabled="busy || !text.trim()">提问</button>
     </form>
     <p class="composer-note">仅依据管理员维护的资料回答 · 此窗口不办理业务</p>
   </section>

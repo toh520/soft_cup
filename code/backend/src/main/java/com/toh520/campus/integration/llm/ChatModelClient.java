@@ -37,6 +37,16 @@ public class ChatModelClient {
 
   public JsonNode complete(String prompt, Object input) {
     try {
+      return completeOnce(prompt, input);
+    } catch (InvalidChatJson error) {
+      // 食堂解析/选餐没有业务写入，仅格式错误时重新请求一次；超时、权限和业务冲突不重试。
+      if (!prompt.startsWith("nutrition/")) throw error;
+      return completeOnce(prompt, input);
+    }
+  }
+
+  private JsonNode completeOnce(String prompt, Object input) {
+    try {
       String system =
           new ClassPathResource("prompts/" + prompt + ".txt")
               .getContentAsString(StandardCharsets.UTF_8);
@@ -57,13 +67,20 @@ public class ChatModelClient {
           response.path("choices").path(0).path("message").path("content").asText("").trim();
       if (content.startsWith("```"))
         content = content.replaceFirst("^```(?:json)?\\s*", "").replaceFirst("\\s*```$", "");
-      JsonNode parsed = mapper.readTree(content);
+      JsonNode parsed =
+          mapper.reader().with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).readTree(content);
       if (parsed == null || !parsed.isObject()) throw new IllegalArgumentException();
       return parsed;
     } catch (BusinessException e) {
       throw e;
     } catch (Exception e) {
-      throw new BusinessException(502, "模型返回结构无效，请重试");
+      throw new InvalidChatJson();
+    }
+  }
+
+  private static final class InvalidChatJson extends BusinessException {
+    InvalidChatJson() {
+      super(502, "模型返回结构无效，请重试");
     }
   }
 }

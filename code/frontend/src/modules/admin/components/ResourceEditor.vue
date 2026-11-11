@@ -1,6 +1,13 @@
 <script setup>
 import { reactive } from "vue";
-const props = defineProps({ schema: Object, item: Object, busy: Boolean });
+import EditorDialog from "../../../shared/components/EditorDialog.vue";
+import FeedbackMessage from "../../../shared/components/FeedbackMessage.vue";
+const props = defineProps({
+  schema: Object,
+  item: Object,
+  busy: Boolean,
+  error: String,
+});
 const emit = defineEmits(["save", "cancel"]);
 const form = reactive({
   ...props.schema.defaults,
@@ -26,8 +33,12 @@ function submit() {
 }
 </script>
 <template>
-  <section class="panel editor-panel">
-    <h2>{{ item?.id ? "编辑" : "新增" }}{{ schema.title }}</h2>
+  <EditorDialog
+    :title="`${item?.id ? '编辑' : '新增'}${schema.title}`"
+    :busy="busy"
+    @close="emit('cancel')"
+  >
+    <FeedbackMessage :error="error" />
     <form @submit.prevent="submit">
       <div class="form-grid">
         <label
@@ -82,5 +93,5 @@ function submit() {
         </button>
       </div>
     </form>
-  </section>
+  </EditorDialog>
 </template>

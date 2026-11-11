@@ -2,7 +2,12 @@
 import AppIcon from "../../../shared/components/AppIcon.vue";
 defineProps({ plan: Object, index: Number, busy: Boolean });
 defineEmits(["select"]);
-const labels = { staple: "主食", protein: "蛋白", vegetable: "蔬菜" };
+const labels = {
+  staple: "主食",
+  protein: "蛋白",
+  vegetable: "蔬菜",
+  soup: "汤",
+};
 </script>
 <template>
   <article class="meal-card">

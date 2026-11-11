@@ -11,6 +11,7 @@ const categories = [
   ["staple", "主食"],
   ["protein", "蛋白类"],
   ["vegetable", "蔬菜"],
+  ["soup", "汤"],
 ];
 const filtered = computed(() =>
   props.dishes.filter(

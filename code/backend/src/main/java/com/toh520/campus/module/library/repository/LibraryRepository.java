@@ -14,13 +14,30 @@ public class LibraryRepository {
   }
 
   public List<Map<String, Object>> search(String query) {
-    String pattern = "%" + query.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
+    // 用户自然语言常省略书名空格；两端一致去除常见空白，仍按字面转义 LIKE 通配符。
+    String normalized = query.replaceAll("[\\s\\p{Z}]+", "");
+    String pattern =
+        "%" + normalized.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
     return jdbc.query(
-        "SELECT * FROM books WHERE title LIKE ? ESCAPE '!' OR author LIKE ? ESCAPE '!' OR summary LIKE ? ESCAPE '!' ORDER BY id",
+        "SELECT * FROM books WHERE "
+            + normalizedColumn("title")
+            + " LIKE ? ESCAPE '!' OR "
+            + normalizedColumn("author")
+            + " LIKE ? ESCAPE '!' OR "
+            + normalizedColumn("summary")
+            + " LIKE ? ESCAPE '!' ORDER BY id",
         Rows.INSTANCE,
         pattern,
         pattern,
         pattern);
+  }
+
+  private String normalizedColumn(String column) {
+    // 列名仅由上方固定调用传入，不接受请求参数作为SQL标识符。
+    String expression = column;
+    for (int whitespace : new int[] {32, 9, 10, 13, 160, 12288})
+      expression = "replace(" + expression + ",char(" + whitespace + "),'')";
+    return expression;
   }
 
   public Map<String, Object> find(long id) {

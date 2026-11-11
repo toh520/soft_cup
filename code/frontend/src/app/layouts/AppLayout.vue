@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth } from "../../modules/auth/composables/useAuth.js";
 import AppIcon from "../../shared/components/AppIcon.vue";
@@ -25,9 +25,28 @@ const links = computed(() =>
         ["/profile", "个人中心", "profile"],
       ],
 );
+const navigation = ref(null);
+// 只滚动导航容器，让手机上当前入口可见，不改变正文的滚动位置。
+watch(
+  () => route.path,
+  async () => {
+    await nextTick();
+    const active = navigation.value?.querySelector(".router-link-active");
+    if (active && navigation.value.scrollWidth > navigation.value.clientWidth) {
+      navigation.value.scrollTo({
+        left: active.offsetLeft - navigation.value.offsetLeft - 12,
+        behavior: "instant",
+      });
+    }
+  },
+  { immediate: true },
+);
 const currentLabel = computed(
   () => links.value.find(([path]) => path === route.path)?.[1] || "校园服务",
 );
+function focusContent() {
+  document.getElementById("main-content")?.focus();
+}
 const date = new Intl.DateTimeFormat("zh-CN", {
   timeZone: "Asia/Shanghai",
   month: "long",
@@ -37,14 +56,18 @@ const date = new Intl.DateTimeFormat("zh-CN", {
 async function signOut() {
   try {
     await logout();
-    router.push("/login");
   } catch (error) {
     alert(error.message);
+  } finally {
+    router.push("/login");
   }
 }
 </script>
 <template>
   <div class="app-shell">
+    <a href="#main-content" class="skip-link" @click.prevent="focusContent"
+      >跳到主要内容</a
+    >
     <aside class="sidebar">
       <RouterLink class="brand" to="/"
         ><span class="brand-symbol"
@@ -56,7 +79,7 @@ async function signOut() {
       <div class="sidebar-label">
         {{ user?.role === "admin" ? "校园管理" : "校园生活" }}
       </div>
-      <nav aria-label="主导航">
+      <nav ref="navigation" aria-label="主导航">
         <RouterLink v-for="[path, label, icon] in links" :key="path" :to="path"
           ><AppIcon :name="icon" :size="19" /><span>{{ label }}</span
           ><span class="nav-active-dot"></span
@@ -85,6 +108,8 @@ async function signOut() {
       </div>
     </aside>
     <main
+      id="main-content"
+      tabindex="-1"
       :class="[
         'workspace',
         { 'workspace-canteen': route.path === '/nutrition' },

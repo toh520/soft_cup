@@ -2,6 +2,7 @@ package com.toh520.campus.module.nutrition.controller;
 
 import com.toh520.campus.module.auth.model.LoginSession;
 import com.toh520.campus.module.nutrition.dto.DishRequest;
+import com.toh520.campus.module.nutrition.dto.RecommendationRequest;
 import com.toh520.campus.module.nutrition.service.NutritionService;
 import jakarta.validation.Valid;
 import java.util.Map;
@@ -27,8 +28,9 @@ public class NutritionController {
   }
 
   @PostMapping("/nutrition/recommendations")
-  Object recommend(@RequestAttribute LoginSession session) {
-    return nutrition.recommend(session);
+  Object recommend(
+      @RequestAttribute LoginSession session, @Valid @RequestBody RecommendationRequest request) {
+    return nutrition.recommend(session, request.requirements());
   }
 
   @GetMapping("/admin/dishes")

@@ -34,7 +34,7 @@ button,
   color: #35466a;
   cursor: pointer;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 14px;
   transition:
     background 0.15s,
     border-color 0.15s;
@@ -78,7 +78,7 @@ small {
   color: var(--muted);
 }
 small {
-  font-size: 12px;
+  font-size: 13px;
 }
 h1,
 h2,
@@ -88,7 +88,7 @@ p {
 }
 h1 {
   font-family: var(--heading-font);
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
   line-height: 1.45;
   margin-bottom: 8px;
@@ -108,7 +108,7 @@ label {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }
 input,
@@ -145,13 +145,13 @@ form > label {
   display: inline-block;
   margin: 10px 0;
   color: var(--primary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   text-decoration: none;
 }
 .eyebrow {
   color: #8191b4;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1px;
   margin-bottom: 18px;
 }
@@ -197,7 +197,7 @@ form > label {
   display: block;
   margin-top: 5px;
   font-family: "Microsoft YaHei", sans-serif;
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 1px;
   color: #8b97ab;
@@ -205,7 +205,7 @@ form > label {
 .sidebar-label {
   padding: 43px 16px 15px;
   color: #9aa5b7;
-  font-size: 10px;
+  font-size: 13px;
 }
 .sidebar nav {
   display: flex;
@@ -220,7 +220,7 @@ form > label {
   border-radius: 9px;
   text-decoration: none;
   color: #66748b;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .sidebar nav a svg {
@@ -250,7 +250,7 @@ form > label {
   color: #adb7c7;
 }
 .sidebar-note p {
-  font-size: 10px;
+  font-size: 13px;
   line-height: 2;
   margin: 12px 0 0;
   color: #98a5b6;
@@ -271,14 +271,14 @@ form > label {
   border-radius: 50%;
   background: #e9edf8;
   color: #49629a;
-  font-size: 13px;
+  font-size: 14px;
 }
 .sidebar-user {
   min-width: 0;
 }
 .sidebar-user strong {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   overflow: hidden;
   white-space: nowrap;
@@ -287,7 +287,7 @@ form > label {
 .sidebar-user small {
   display: block;
   margin-top: 4px;
-  font-size: 9px;
+  font-size: 13px;
 }
 .logout-button {
   margin-left: auto;
@@ -306,7 +306,7 @@ form > label {
   gap: 12px;
   margin-bottom: 30px;
   border-bottom: 1px solid #e2e7f0;
-  font-size: 10px;
+  font-size: 13px;
   color: #8d99af;
 }
 .breadcrumb {
@@ -334,7 +334,7 @@ form > label {
   margin-bottom: 26px;
 }
 .page-heading .muted {
-  font-size: 12px;
+  font-size: 13px;
   margin: 0;
   color: #68768d;
 }
@@ -354,7 +354,7 @@ form > label {
 .chat-panel {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 255px);
+  height: calc(100dvh - 235px);
   min-height: 460px;
   overflow: hidden;
   box-shadow: 0 8px 35px #20314903;
@@ -366,9 +366,9 @@ form > label {
   scroll-behavior: smooth;
 }
 .chat-welcome {
-  margin: 50px auto 45px;
+  margin: 36px auto 32px;
   text-align: center;
-  max-width: 650px;
+  max-width: 760px;
 }
 .assistant-symbol {
   display: grid;
@@ -392,9 +392,9 @@ form > label {
   font-weight: 500;
 }
 .chat-welcome p {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 2.1;
-  color: #8793aa;
+  color: #66758b;
 }
 .suggestions {
   display: flex;
@@ -406,7 +406,7 @@ form > label {
 .suggestions button {
   padding: 12px 17px;
   background: #f8f9fd;
-  font-size: 11px;
+  font-size: 13px;
   border-color: #e8ecf5;
 }
 .chat-message {
@@ -425,11 +425,11 @@ form > label {
 }
 .message-role {
   color: #7d8ba9;
-  font-size: 10px;
+  font-size: 13px;
   margin-bottom: 8px;
 }
 .message-text {
-  font-size: 13px;
+  font-size: 14px;
   white-space: pre-wrap;
   margin: 0;
   overflow-wrap: anywhere;
@@ -447,16 +447,16 @@ form > label {
   border: 0;
   background: transparent;
   box-shadow: none;
-  font-size: 12px;
+  font-size: 13px;
 }
 .chat-composer button {
   white-space: nowrap;
 }
 .composer-note {
   margin: 12px 8px 17px;
-  color: #a0aac0;
+  color: #66758b;
   text-align: center;
-  font-size: 9px;
+  font-size: 13px;
 }
 .result-card {
   padding: 20px;
@@ -469,7 +469,7 @@ form > label {
   display: block;
   margin-bottom: 14px;
   color: #7086b3;
-  font-size: 11px;
+  font-size: 13px;
 }
 .result-card h3 small {
   margin-left: 10px;
@@ -499,7 +499,7 @@ form > label {
   border: 1px solid #dce5f2;
   border-radius: 8px;
   background: #eff4fb;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.9;
   overflow-wrap: anywhere;
 }
@@ -535,7 +535,7 @@ form > label {
   margin-bottom: 7px;
 }
 .book-row p {
-  font-size: 12px;
+  font-size: 13px;
   margin: 6px 0 0;
 }
 .book-row button {
@@ -544,9 +544,9 @@ form > label {
 .empty-state {
   padding: 50px 24px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.8;
-  color: #95a1b7;
+  color: #66758b;
 }
 .table-scroll {
   width: 100%;
@@ -556,12 +556,12 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
 }
 th {
   padding: 14px 13px;
   background: #f5f7fc;
-  color: #8795ae;
+  color: #53627e;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -580,7 +580,7 @@ tbody tr:last-child td {
 }
 .table-actions button {
   padding: 6px 11px;
-  font-size: 11px;
+  font-size: 13px;
 }
 .danger-text {
   color: #a56b61;
@@ -597,7 +597,7 @@ tbody tr:last-child td {
   font-size: 18px;
 }
 .section-heading .muted {
-  font-size: 11px;
+  font-size: 13px;
 }
 .tabs {
   display: flex;
@@ -610,7 +610,7 @@ tbody tr:last-child td {
 .tabs button {
   background: transparent;
   border: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #8190ab;
 }
 .tabs button.active {
@@ -619,20 +619,20 @@ tbody tr:last-child td {
 }
 .record-row p {
   margin: 7px 0 0;
-  font-size: 12px;
-}
-.record-row strong {
   font-size: 13px;
 }
+.record-row strong {
+  font-size: 14px;
+}
 .record-row > span {
-  font-size: 11px;
+  font-size: 13px;
 }
 .badge {
   display: inline-block;
   padding: 5px 10px;
   border-radius: 5px;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: 13px;
   color: #6a8493;
   background: #eef3f8;
 }
@@ -656,14 +656,14 @@ blockquote {
   background: #fbfcfb;
 }
 blockquote small {
-  font-size: 10px;
+  font-size: 13px;
 }
 blockquote p {
-  font-size: 12px;
+  font-size: 13px;
   margin: 8px 0 0;
 }
 .footnote {
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.9;
   color: #8e9ab0;
   margin: 24px 0 12px;
@@ -683,7 +683,7 @@ blockquote p {
 }
 .toolbar button {
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 13px;
 }
 .editor-panel {
   margin-top: 24px;
@@ -714,7 +714,7 @@ blockquote p {
   max-width: 300px;
 }
 .demo-picker button {
-  font-size: 11px;
+  font-size: 13px;
 }
 .password-reset {
   display: flex;
@@ -730,7 +730,7 @@ blockquote p {
 }
 .approval-row p {
   margin-bottom: 7px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .approval-row small {
   font-weight: 400;
@@ -753,7 +753,7 @@ blockquote p {
 }
 .login-story .eyebrow {
   color: #bac9ef;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 3px;
 }
 .login-story h1 {
@@ -765,7 +765,7 @@ blockquote p {
 }
 .login-story > p:not(.eyebrow) {
   color: #a7b7dd;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 2.1;
 }
 .login-story > small {
@@ -773,7 +773,7 @@ blockquote p {
   padding-top: 35px;
   position: relative;
   color: #a2b5db;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 1px;
 }
 .campus-art {
@@ -819,15 +819,15 @@ blockquote p {
 }
 .login-form {
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
 }
 .login-form h2 {
   font-family: var(--heading-font);
-  font-size: 30px;
+  font-size: 32px;
   margin: 15px 0;
 }
 .login-form > .muted {
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 35px;
 }
 .login-form .primary {
@@ -838,11 +838,11 @@ blockquote p {
 .switch-login {
   padding: 0;
   margin-top: 25px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .login-note {
   margin-top: 48px;
-  font-size: 10px;
+  font-size: 13px;
   color: #a2adbf;
 }
 @media (min-width: 1600px) {
@@ -861,7 +861,7 @@ blockquote p {
     padding-right: 12px;
   }
   .sidebar nav a {
-    font-size: 11px;
+    font-size: 13px;
     gap: 10px;
   }
   .workspace {
@@ -906,7 +906,7 @@ blockquote p {
     letter-spacing: 2px;
   }
   .brand-name small {
-    font-size: 8px;
+    font-size: 13px;
     margin-top: 3px;
   }
   .sidebar-label,
@@ -923,7 +923,7 @@ blockquote p {
   .sidebar nav a {
     gap: 7px;
     padding: 10px 11px;
-    font-size: 10px;
+    font-size: 13px;
     flex-shrink: 0;
   }
   .sidebar nav a svg {
@@ -945,14 +945,14 @@ blockquote p {
   .avatar {
     width: 28px;
     height: 28px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .sidebar-user strong {
     max-width: 75px;
-    font-size: 10px;
+    font-size: 13px;
   }
   .sidebar-user small {
-    font-size: 8px;
+    font-size: 13px;
   }
   .workspace {
     margin: 0;
@@ -962,10 +962,10 @@ blockquote p {
   .topbar {
     height: 48px;
     margin-bottom: 24px;
-    font-size: 9px;
+    font-size: 13px;
   }
   .topbar-date {
-    font-size: 8px;
+    font-size: 13px;
     gap: 5px;
   }
   .topbar-date svg {
@@ -983,12 +983,12 @@ blockquote p {
     font-size: 25px;
   }
   .page-heading .muted {
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.9;
   }
   .page-heading > button {
     white-space: nowrap;
-    font-size: 10px;
+    font-size: 13px;
     padding: 8px 10px;
   }
   .chat-panel {
@@ -1005,13 +1005,13 @@ blockquote p {
     font-size: 22px;
   }
   .chat-welcome p {
-    font-size: 11px;
+    font-size: 13px;
   }
   .suggestions {
     gap: 6px;
   }
   .suggestions button {
-    font-size: 9px;
+    font-size: 13px;
     padding: 10px 11px;
   }
   .chat-message {
@@ -1026,15 +1026,15 @@ blockquote p {
     gap: 3px;
   }
   .chat-composer input {
-    font-size: 11px;
+    font-size: 13px;
     padding: 10px;
   }
   .chat-composer button {
     padding: 9px 13px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .composer-note {
-    font-size: 8px;
+    font-size: 13px;
   }
   .result-card {
     padding: 14px;
@@ -1095,7 +1095,7 @@ blockquote p {
   }
   .login-story > p:not(.eyebrow) {
     margin-bottom: 0;
-    font-size: 11px;
+    font-size: 13px;
   }
   .campus-art,
   .login-story > small {

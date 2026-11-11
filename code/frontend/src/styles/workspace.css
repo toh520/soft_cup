@@ -1,0 +1,731 @@
+/* 校园服务台的外壳与交互组件：深蓝导航提供方向，正文保持明亮、可读。 */
+.sidebar {
+  background: #203b77;
+  border: 0;
+  width: 232px;
+  padding: 30px 16px 22px;
+}
+.sidebar .brand {
+  color: #fff;
+}
+.sidebar .brand-symbol {
+  background: #cfe5d8;
+  color: #203b77;
+}
+.sidebar .brand-name small {
+  color: #cedaf0;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.sidebar-label {
+  color: #c0d0ec;
+  padding-top: 40px;
+  font-size: 12px;
+}
+.sidebar nav a {
+  color: #dce5f7;
+  font-size: 14px;
+  padding: 14px 13px;
+}
+.sidebar nav a:hover {
+  background: #304f8c;
+}
+.sidebar nav a.router-link-active {
+  background: #fff;
+  color: #203b77;
+  box-shadow: 0 3px 12px #12264e16;
+}
+.sidebar-note,
+.sidebar-note p {
+  color: #c0d0ec;
+}
+.sidebar-bottom {
+  border-color: #5270a0;
+}
+.sidebar-user strong {
+  color: #fff;
+  font-size: 14px;
+}
+.sidebar-user small {
+  color: #c0d0ec;
+  font-size: 12px;
+}
+.logout-button {
+  color: #dce5f7;
+  min-width: 38px;
+  min-height: 38px;
+}
+.logout-button:hover {
+  background: #304f8c;
+}
+.workspace {
+  margin-left: 232px;
+  width: calc(100% - 232px);
+  max-width: 1780px;
+  padding: 0 36px 40px;
+  min-width: 0;
+}
+.topbar {
+  height: 66px;
+  margin-bottom: 28px;
+  color: #65738b;
+  font-size: 12px;
+}
+.topbar-date {
+  font-size: 12px;
+}
+.page-heading .muted {
+  max-width: 68ch;
+  font-size: 14px;
+}
+.page-heading > div {
+  min-width: 0;
+}
+.stack,
+.stack > *,
+.panel {
+  min-width: 0;
+}
+.panel {
+  border-color: #dfe5ef;
+}
+.message-text {
+  font-size: 15px;
+  line-height: 1.9;
+}
+.chat-panel {
+  border-radius: 20px;
+  border-color: #dae2ef;
+}
+.chat-welcome h2 {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+.chat-welcome p {
+  font-size: 14px;
+}
+.assistant-symbol {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 20px;
+  background: #2848a5;
+  color: white;
+}
+.knowledge-symbol {
+  background: #d9eae0;
+  color: #335f4e;
+}
+.service-suggestions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  text-align: left;
+}
+.service-suggestions button {
+  padding: 18px 16px;
+  justify-content: flex-start;
+  gap: 13px;
+  min-height: 90px;
+  background: #f7f9fd;
+  border-color: #dfe6f1;
+}
+.service-suggestions button svg {
+  color: #2848a5;
+  flex-shrink: 0;
+}
+.service-suggestions span {
+  min-width: 0;
+}
+.service-suggestions strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+.service-suggestions small {
+  display: block;
+  color: #66758b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.chat-composer {
+  border-color: #c5d2e8;
+  background: #fff;
+  padding: 8px;
+  border-radius: 14px;
+}
+.chat-composer:focus-within {
+  border-color: #2848a5;
+  box-shadow: 0 0 0 3px #2848a50c;
+}
+.chat-composer input {
+  font-size: 15px;
+}
+.chat-composer .primary {
+  min-width: 74px;
+}
+.composer-note {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.chat-message {
+  max-width: 94%;
+}
+.chat-message.user {
+  background: #e9effc;
+}
+.knowledge-panel blockquote {
+  background: #f0f6f2;
+  border-color: #6e9a84;
+}
+.notice {
+  font-size: 14px;
+}
+.notice[role="status"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.loading-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #c0cde3;
+  border-top-color: #2848a5;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: feedback-spin 1s linear infinite;
+}
+@keyframes feedback-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+table {
+  font-size: 14px;
+}
+th {
+  color: #53627e;
+  background: #f2f5fa;
+  padding: 15px 14px;
+}
+td {
+  padding: 16px 14px;
+}
+tbody tr:hover {
+  background: #f8faff;
+}
+.table-actions {
+  display: table-cell;
+}
+.table-actions button {
+  margin: 3px;
+  font-size: 13px;
+}
+.toolbar input {
+  flex: 1;
+  max-width: 360px;
+  min-width: 160px;
+}
+.toolbar {
+  gap: 10px;
+}
+.table-scroll {
+  border-radius: 10px;
+  border: 1px solid #e5e9f1;
+}
+.table-scroll table {
+  min-width: 600px;
+}
+.record-row > div,
+.approval-row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.empty-state {
+  color: #66758b;
+  font-size: 14px;
+  padding: 44px 24px;
+  background: #f8fafd;
+  border-radius: 12px;
+}
+.profile-overview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 26px 30px;
+  margin-bottom: 24px;
+  border: 1px solid #d7e2ed;
+  border-radius: 16px;
+  background: #eaf0f8;
+}
+.profile-identity,
+.profile-readiness {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: #2848a5;
+  color: white;
+  font-size: 24px;
+}
+.profile-identity h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+.profile-identity p {
+  margin: 0;
+  color: #53627e;
+  font-size: 13px;
+}
+.profile-identity p span {
+  margin-left: 14px;
+}
+.profile-readiness > svg {
+  color: #477967;
+  flex-shrink: 0;
+}
+.profile-readiness strong {
+  font-size: 14px;
+}
+.profile-readiness p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #53627e;
+}
+.profile-readiness a {
+  font-size: 13px;
+  color: #2848a5;
+  margin-left: 8px;
+  white-space: nowrap;
+  text-underline-offset: 4px;
+}
+.editor-dialog {
+  width: min(760px, calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
+  border: 1px solid #ced8e8;
+  border-radius: 18px;
+  padding: 0;
+  color: #203149;
+  box-shadow: 0 24px 80px #14274833;
+}
+.editor-dialog::backdrop {
+  background: #182c4f77;
+}
+.dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px;
+  background: #f1f5fb;
+  border-bottom: 1px solid #dfe5ef;
+}
+.dialog-heading p {
+  color: #66758b;
+  font-size: 12px;
+  margin: 0 0 5px;
+}
+.dialog-heading h2 {
+  font-size: 22px;
+  margin: 0;
+}
+.dialog-close {
+  font-size: 26px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.dialog-content {
+  padding: 26px 28px;
+}
+.dialog-content .actions {
+  justify-content: flex-end;
+  border-top: 1px solid #e5e9f1;
+  padding-top: 20px;
+}
+.login-story {
+  background: #203b77;
+  padding: 52px 9%;
+}
+.login-story h1 {
+  margin-top: 65px;
+  font-size: clamp(32px, 3.1vw, 48px);
+  line-height: 1.55;
+  letter-spacing: 2px;
+}
+.login-story > p:not(.eyebrow) {
+  color: #d2def3;
+  font-size: 15px;
+}
+.login-story > small {
+  color: #d2def3;
+  font-size: 12px;
+}
+.campus-illustration {
+  width: calc(100% + 60px);
+  margin: 20px -30px 0;
+  max-height: 320px;
+}
+.login-panel {
+  background: #f8fafc;
+}
+.login-form > .eyebrow {
+  display: none;
+}
+.login-form h2 {
+  font-size: 34px;
+}
+.login-form > .muted {
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+.login-form label {
+  font-size: 14px;
+}
+.login-form input {
+  min-height: 48px;
+  background: #fff;
+}
+.login-form .primary {
+  min-height: 48px;
+  font-size: 15px;
+}
+.password-field {
+  display: flex;
+  position: relative;
+}
+.password-field input {
+  padding-right: 60px;
+}
+.password-field button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0;
+  color: #53627e;
+  font-size: 12px;
+}
+.tab-login-note {
+  border-top: 1px solid #dfe5ef;
+  padding-top: 22px;
+  margin: 30px 0 0;
+  font-size: 12px;
+  color: #53627e;
+}
+.login-note {
+  font-size: 12px;
+  color: #66758b;
+  margin-top: 12px;
+}
+.skip-link {
+  position: fixed;
+  top: -80px;
+  left: 16px;
+  padding: 12px 18px;
+  background: #fff;
+  color: #2848a5;
+  z-index: 100;
+  border-radius: 8px;
+}
+.skip-link:focus {
+  top: 12px;
+}
+.ai-dining-hero {
+  padding: 32px 34px;
+}
+.ai-hero-copy {
+  width: 530px;
+}
+.ai-hero-copy > p {
+  font-size: 14px;
+  color: #d4e0fa;
+}
+.ai-feature-label,
+.ai-hero-actions > span,
+.plate-caption {
+  color: #d4e0fa;
+  font-size: 12px;
+}
+.meal-requirements {
+  max-width: 520px;
+}
+.meal-requirements textarea {
+  font-size: 14px;
+}
+.ai-hero-art {
+  width: 290px;
+  right: 22px;
+  top: 28px;
+}
+.meal-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.meal-presets button {
+  padding: 6px 10px;
+  border: 1px solid #7892cb;
+  color: #eff4ff;
+  background: transparent;
+  font-size: 12px;
+}
+.meal-presets button:hover {
+  background: #36559e;
+}
+.ai-generate {
+  min-height: 44px;
+  font-size: 14px;
+}
+.menu-heading h2,
+.recommendation-heading h2 {
+  font-size: 24px;
+}
+.category-tabs button {
+  min-height: 40px;
+  font-size: 13px;
+}
+.dish-info h3 {
+  font-size: 16px;
+}
+.meal-conditions {
+  padding: 14px 18px;
+  background: #eaf0fa;
+  border-radius: 10px;
+}
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 210px;
+  }
+  .workspace {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+    padding: 0 24px 30px;
+  }
+  .ai-hero-art {
+    width: 220px;
+    right: -20px;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .ai-hero-copy {
+    max-width: 100%;
+  }
+  .service-suggestions {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 20px auto 0;
+    gap: 8px;
+  }
+  .service-suggestions button {
+    min-height: 64px;
+    padding: 12px 16px;
+  }
+  .service-suggestions strong {
+    margin-bottom: 3px;
+  }
+}
+@media (max-width: 720px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    padding: 17px 16px 10px;
+  }
+  .sidebar .brand-name small {
+    font-size: 10px;
+  }
+  .sidebar nav a {
+    font-size: 13px;
+    padding: 11px 13px;
+  }
+  .sidebar-user strong {
+    font-size: 12px;
+  }
+  .sidebar-user small {
+    font-size: 10px;
+  }
+  .sidebar-bottom {
+    top: 19px;
+    right: 14px;
+  }
+  .workspace {
+    margin-left: 0;
+    width: 100%;
+    padding: 0 16px 28px;
+  }
+  .topbar {
+    height: 48px;
+    margin-bottom: 20px;
+    font-size: 11px;
+  }
+  .topbar-date {
+    font-size: 11px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  .page-heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-heading .muted {
+    font-size: 13px;
+  }
+  .page-heading > button {
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .chat-panel {
+    min-height: 540px;
+    height: calc(100dvh - 260px);
+    border-radius: 14px;
+  }
+  .chat-welcome {
+    margin: 18px auto 22px;
+  }
+  .chat-welcome h2 {
+    font-size: 23px;
+  }
+  .chat-welcome p {
+    font-size: 13px;
+  }
+  .assistant-symbol {
+    width: 48px;
+    height: 48px;
+    font-size: 25px;
+    margin-bottom: 16px;
+  }
+  .chat-composer {
+    margin: 0 12px;
+    padding: 5px;
+  }
+  .chat-composer input {
+    font-size: 16px;
+    padding: 10px 6px;
+  }
+  .chat-composer .primary {
+    min-width: 58px;
+    padding: 10px;
+  }
+  .composer-note {
+    font-size: 11px;
+    padding: 0 10px;
+  }
+  .message-list {
+    padding: 16px;
+  }
+  .chat-message {
+    max-width: 100%;
+    padding: 14px;
+  }
+  .chat-message.user {
+    max-width: 90%;
+  }
+  .message-text {
+    font-size: 14px;
+  }
+  .profile-overview {
+    padding: 20px;
+    gap: 20px;
+  }
+  .profile-readiness {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .profile-readiness a {
+    margin-left: 34px;
+  }
+  .profile-identity p span {
+    display: block;
+    margin-left: 0;
+  }
+  .dialog-heading,
+  .dialog-content {
+    padding: 20px;
+  }
+  .editor-dialog {
+    width: calc(100% - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+  button.add-dish {
+    width: 40px;
+    height: 40px;
+  }
+  .quantity-control button {
+    width: 36px;
+    height: 36px;
+  }
+  .toolbar input {
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .login-story {
+    padding: 28px;
+    min-height: 220px;
+  }
+  .login-story h1 {
+    margin: 14px 0;
+    font-size: 30px;
+  }
+  .login-story .eyebrow {
+    margin: 0;
+  }
+  .login-story > p:not(.eyebrow) {
+    font-size: 13px;
+  }
+  .campus-illustration {
+    display: none;
+  }
+  .login-panel {
+    padding: 32px 24px;
+  }
+  .login-form h2 {
+    font-size: 28px;
+  }
+  .ai-dining-hero {
+    padding: 25px 22px;
+  }
+  .ai-hero-art {
+    width: 170px;
+    right: -22px;
+    top: 27px;
+    opacity: 0.35;
+  }
+  .ai-hero-copy {
+    width: 100%;
+  }
+  .ai-hero-copy h2 {
+    font-size: 29px;
+  }
+  .ai-hero-copy > p {
+    font-size: 13px;
+  }
+  .meal-presets button {
+    font-size: 12px;
+    min-height: 36px;
+  }
+  .dish-info h3 {
+    font-size: 15px;
+  }
+  .meal-conditions {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator {
+    animation: none;
+  }
+}

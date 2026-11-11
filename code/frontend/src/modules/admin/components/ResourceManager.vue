@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { adminApi } from "../api/admin-api.js";
 import { schemas, labels } from "../model/resource-schemas.js";
 import { demoKnowledge } from "../model/demo-knowledge.js";
@@ -77,12 +77,13 @@ async function rebuild() {
     busy.value = false;
   }
 }
-function edit(item = null) {
+async function edit(item = null) {
+  error.value = "";
+  message.value = "";
   selected.value = item;
   editing.value = false;
-  setTimeout(() => {
-    editing.value = true;
-  }, 0);
+  await nextTick();
+  editing.value = true;
 }
 function display(value) {
   return typeof value === "boolean"
@@ -101,7 +102,12 @@ function filtered() {
 }
 </script>
 <template>
-  <FeedbackMessage :loading="busy" :error="error" :message="message" />
+  <FeedbackMessage
+    v-if="!editing"
+    :loading="busy"
+    :error="error"
+    :message="message"
+  />
   <section class="panel">
     <div class="toolbar">
       <input
@@ -182,6 +188,7 @@ function filtered() {
   <ResourceEditor
     v-if="editing"
     :key="selected?.id || example || 'new'"
+    :error="error"
     :schema="schema"
     :item="selected"
     :busy="busy"

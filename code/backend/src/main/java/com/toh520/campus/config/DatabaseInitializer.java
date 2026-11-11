@@ -38,6 +38,7 @@ public class DatabaseInitializer implements ApplicationRunner {
           "UPDATE users SET password=?,password_hash='' WHERE account='admin'", adminPassword);
     applyMigration(3, "003_demo_materials.sql");
     applyMigration(4, "004_order_item_quantity.sql");
+    applyMigration(5, "005_meal_soup.sql");
   }
 
   private void applyMigration(int version, String filename) throws Exception {

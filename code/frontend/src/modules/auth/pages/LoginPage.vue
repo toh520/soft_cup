@@ -4,6 +4,8 @@ import { useRouter } from "vue-router";
 import { authApi } from "../api/auth-api.js";
 import { useAuth } from "../composables/useAuth.js";
 import FeedbackMessage from "../../../shared/components/FeedbackMessage.vue";
+import CampusIllustration from "../../../shared/components/CampusIllustration.vue";
+const showPassword = ref(false);
 const registering = ref(false),
   name = ref(""),
   account = ref(""),
@@ -46,9 +48,7 @@ async function submit() {
       <p class="eyebrow">知行校园</p>
       <h1>学习之外，<br />生活也有好帮手。</h1>
       <p>办理校园事务，发现可靠知识，<br />从容安排每一天。</p>
-      <div class="campus-art" aria-hidden="true">
-        <span>知</span><span>行</span><i></i>
-      </div>
+      <CampusIllustration />
       <small>校园服务 · 知识问答 · 营养食堂</small>
     </section>
     <section class="login-panel">
@@ -78,15 +78,26 @@ async function submit() {
               :pattern="registering ? '[A-Za-z0-9]{1,32}' : undefined"
               autocomplete="username" /></label
           ><label
-            >密码<input
-              v-model="password"
-              type="password"
-              required
-              :minlength="registering ? 6 : 1"
-              maxlength="64"
-              :autocomplete="
-                registering ? 'new-password' : 'current-password'
-              " /></label
+            >密码<span class="password-field"
+              ><input
+                v-model="password"
+                aria-label="密码"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                :minlength="registering ? 6 : 1"
+                maxlength="64"
+                :autocomplete="
+                  registering ? 'new-password' : 'current-password'
+                "
+              /><button
+                type="button"
+                :aria-pressed="showPassword"
+                :aria-label="showPassword ? '隐藏密码' : '显示密码'"
+                @click="showPassword = !showPassword"
+              >
+                {{ showPassword ? "隐藏" : "显示" }}
+              </button></span
+            ></label
           ><FeedbackMessage
             :error="error"
             :message="message"
@@ -106,6 +117,7 @@ async function submit() {
         >
           {{ registering ? "已有账号？返回登录" : "还没有账号？注册学生账号" }}
         </button>
+        <p class="tab-login-note">每个标签页可独立登录，刷新保留当前账号。</p>
         <p class="login-note">演示系统 · 校园资料与菜品均为课设示例</p>
       </div>
     </section>

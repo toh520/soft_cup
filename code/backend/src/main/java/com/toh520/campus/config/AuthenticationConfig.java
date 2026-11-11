@@ -23,7 +23,8 @@ public class AuthenticationConfig implements WebMvcConfigurer {
               @Override
               public boolean preHandle(
                   HttpServletRequest request, HttpServletResponse response, Object handler) {
-                // 浏览器 Cookie 的写请求仅接受同源 JSON；拒绝跨站请求，避免表单式 CSRF。
+                response.setHeader("Cache-Control", "no-store");
+                // 写请求仍限制同源 JSON；身份只接受标签页显式提交的 Bearer 凭据。
                 if (!request.getMethod().equals("GET") && !request.getMethod().equals("OPTIONS")) {
                   if ("cross-site".equals(request.getHeader("Sec-Fetch-Site")))
                     throw new BusinessException(403, "不接受跨站操作");
@@ -35,10 +36,10 @@ public class AuthenticationConfig implements WebMvcConfigurer {
                 if (path.equals("/api/auth/login")
                     || path.equals("/api/auth/register")
                     || path.equals("/api/health")) return true;
-                String token = null;
-                if (request.getCookies() != null)
-                  for (var cookie : request.getCookies())
-                    if (cookie.getName().equals("CAMPUS_SESSION")) token = cookie.getValue();
+                String header = request.getHeader("Authorization");
+                String token =
+                    header != null && header.startsWith("Bearer ") ? header.substring(7) : null;
+                request.setAttribute("sessionToken", token);
                 request.setAttribute("session", auth.authenticate(token));
                 return true;
               }

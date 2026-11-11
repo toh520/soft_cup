@@ -17,13 +17,22 @@ public class NutritionService {
   private final UserService users;
   private final ChatModelClient chat;
   private final JsonSupport json;
+  private final MealPreferenceService preferences;
+  private final MealCandidateService candidateService;
 
   public NutritionService(
-      DishRepository dishes, UserService users, ChatModelClient chat, JsonSupport json) {
+      DishRepository dishes,
+      UserService users,
+      ChatModelClient chat,
+      JsonSupport json,
+      MealPreferenceService preferences,
+      MealCandidateService candidateService) {
     this.dishes = dishes;
     this.users = users;
     this.chat = chat;
     this.json = json;
+    this.preferences = preferences;
+    this.candidateService = candidateService;
   }
 
   public Object readiness(LoginSession session) {
@@ -46,7 +55,9 @@ public class NutritionService {
     return result;
   }
 
-  public Object recommend(LoginSession session) {
+  public Object recommend(LoginSession session, String requirements) {
+    String requestText = requirements == null ? "" : requirements.strip();
+    BusinessException.require(requestText.length() <= 300, "本次用餐要求不能超过300字");
     session.requireStudent();
     var profile = users.profile(session);
     var missing = missing(profile);
@@ -71,31 +82,10 @@ public class NutritionService {
                 d ->
                     !"vegetarian".equals(profile.get("dietPreference"))
                         || Boolean.TRUE.equals(d.get("isVegetarian")))
-            .filter(d -> allowed(d, avoided))
+            .filter(d -> DishIngredientMatcher.allowed(d, avoided))
             .toList();
-    var candidates = new ArrayList<Map<String, Object>>();
-    for (var staple : available)
-      if (staple.get("category").equals("staple"))
-        for (var protein : available)
-          if (protein.get("category").equals("protein"))
-            for (var vegetable : available)
-              if (vegetable.get("category").equals("vegetable")) {
-                var selected = List.of(staple, protein, vegetable);
-                var totals = totals(selected);
-                double energy = totals.get("energyKcal");
-                if (energy >= target * 0.75 && energy <= target * 1.25) {
-                  var candidate = new LinkedHashMap<String, Object>();
-                  candidate.put("candidateId", UUID.randomUUID().toString());
-                  candidate.put("dishes", selected);
-                  candidate.put("totals", totals);
-                  candidates.add(candidate);
-                }
-              }
-    candidates.sort(
-        Comparator.comparingDouble(
-            c -> Math.abs(((Map<String, Double>) c.get("totals")).get("energyKcal") - target)));
-    var limited = candidates.stream().limit(12).toList();
-    BusinessException.require(limited.size() >= 3, "符合身体、饮食及供应条件的套餐不足三个，请调整偏好或联系管理员补充菜品");
+    var constraints = preferences.parse(requestText, available);
+    var limited = candidateService.build(available, constraints, target);
     // 候选已完成禁忌与能量校验；仅向模型发送选择所需信息，避免重复完整菜品数据导致超时。
     var modelCandidates =
         limited.stream()
@@ -112,15 +102,26 @@ public class NutritionService {
                                                 "name",
                                                 dish.get("name"),
                                                 "category",
-                                                dish.get("category")))
+                                                dish.get("category"),
+                                                "isVegetarian",
+                                                dish.get("isVegetarian")))
                                     .toList(),
                         "totals", candidate.get("totals")))
             .toList();
+    int planCount = Math.min(3, limited.size());
     var response =
         chat.complete(
             "nutrition/recommend",
-            Map.of("targetEnergyKcal", target, "candidates", modelCandidates));
-    if (!response.path("plans").isArray() || response.path("plans").size() != 3)
+            Map.of(
+                "targetEnergyKcal",
+                target,
+                "requirements",
+                requestText,
+                "candidates",
+                modelCandidates,
+                "planCount",
+                planCount));
+    if (!response.path("plans").isArray() || response.path("plans").size() != planCount)
       throw new BusinessException(502, "推荐结构无效，请重试");
     var seen = new HashSet<String>();
     var plans = new ArrayList<Map<String, Object>>();
@@ -142,10 +143,20 @@ public class NutritionService {
       plan.put("fingerprint", fingerprint(profile, (List<Map<String, Object>>) plan.get("dishes")));
       plans.add(plan);
     }
+    // 模型等待期间管理员可能改菜或下架、学生可能更新档案；发布前再次验证快照。
+    for (var plan : plans) validatePlan(session, plan);
     synchronized (session) {
       session.mealPlans = List.copyOf(plans);
     }
-    return Map.of("plans", plans, "targetEnergyKcal", Math.round(target));
+    return Map.of(
+        "plans",
+        plans,
+        "targetEnergyKcal",
+        Math.round(target),
+        "requirementsSummary",
+        preferences.describe(constraints, available),
+        "notice",
+        planCount < 3 ? "符合全部条件的搭配仅有" + planCount + "种，已全部展示，未放宽要求或重复凑数。" : "");
   }
 
   /** 手动点餐只读取当前供应菜品，不依赖身体资料或模型服务。 */
@@ -171,13 +182,6 @@ public class NutritionService {
               .orElseThrow(() -> new BusinessException(409, "菜品已下架或删除，请移除后重新选择"));
       if (!latest.equals(stored)) throw new BusinessException(409, "菜品资料已变化，请移除后重新选择");
     }
-  }
-
-  private boolean allowed(Map<String, Object> dish, List<String> avoided) {
-    var tags = (List<String>) dish.get("ingredientTags");
-    return tags.stream()
-        .noneMatch(
-            tag -> avoided.stream().anyMatch(item -> tag.trim().equalsIgnoreCase(item.trim())));
   }
 
   private String fingerprint(Map<String, Object> profile, List<Map<String, Object>> selected) {
@@ -220,15 +224,6 @@ public class NutritionService {
     }
     if (!fingerprint(users.profile(session), current).equals(plan.get("fingerprint")))
       throw new BusinessException(409, "身体信息或菜品已变更，请重新推荐");
-  }
-
-  public static Map<String, Double> totals(List<Map<String, Object>> selected) {
-    var result = new LinkedHashMap<String, Double>();
-    for (String field : List.of("energyKcal", "proteinG", "fatG", "carbohydrateG"))
-      result.put(
-          field,
-          Math.round(selected.stream().mapToDouble(d -> number(d, field)).sum() * 10) / 10.0);
-    return result;
   }
 
   private static double number(Map<String, Object> data, String field) {

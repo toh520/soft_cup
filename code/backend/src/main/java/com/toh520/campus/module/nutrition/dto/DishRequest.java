@@ -5,7 +5,7 @@ import java.util.List;
 
 public record DishRequest(
     @NotBlank @Size(max = 100) String name,
-    @NotNull @Pattern(regexp = "staple|protein|vegetable") String category,
+    @NotNull @Pattern(regexp = "staple|protein|vegetable|soup") String category,
     @NotNull @DecimalMin(value = "0", inclusive = false) @DecimalMax("3000") Double portionG,
     @NotNull @DecimalMin(value = "0", inclusive = false) @DecimalMax("10000") Double energyKcal,
     @NotNull @DecimalMin("0") Double proteinG,

@@ -52,7 +52,9 @@ async function submit() {
 </script>
 <template>
   <section class="result-card">
-    <div class="card-tag">请假申请 · 待本人确认</div>
+    <div class="card-tag">
+      请假申请 · {{ success ? "已提交" : inactive ? "已失效" : "待本人确认" }}
+    </div>
     <h3>
       {{ draft.name }} <small>{{ draft.studentNumber }}</small>
     </h3>

@@ -1,15 +1,16 @@
+import { tabApi } from "./tab-api.js";
 import { test, expect } from "@playwright/test";
 
 async function openCanteen(page) {
   const account = `M${Date.now()}${Math.floor(Math.random() * 1000)}`;
-  await page.request.post("/api/auth/register", {
+  await tabApi(page).post("/api/auth/register", {
     data: {
       name: "食堂体验学生",
       studentNumber: account,
       password: "campus123",
     },
   });
-  await page.request.post("/api/auth/login", {
+  await tabApi(page).post("/api/auth/login", {
     data: { account, password: "campus123" },
   });
   await page.goto("/#/nutrition");
@@ -26,7 +27,7 @@ test("手动点餐、搜索分类、份数、刷新恢复、食堂内下单与�
     page.locator("nav").getByRole("link", { name: "我的购物车" }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "生成三个膳食方案" }),
+    page.getByRole("button", { name: "生成膳食方案" }),
   ).toBeDisabled();
   await page.getByRole("button", { name: "主食", exact: true }).click();
   expect(await page.locator(".dish-picture:not(.staple)").count()).toBe(0);
@@ -37,7 +38,7 @@ test("手动点餐、搜索分类、份数、刷新恢复、食堂内下单与�
   await expect(cart).toContainText("手动搭配");
   await cart.getByRole("button", { name: "增加米饭", exact: true }).click();
   await expect(cart.getByLabel("米饭份数", { exact: true })).toHaveText("2");
-  expect(await (await page.request.get("/api/orders")).json()).toHaveLength(0);
+  expect(await (await tabApi(page).get("/api/orders")).json()).toHaveLength(0);
   await page.reload();
   await expect(cart.getByLabel("米饭份数", { exact: true })).toHaveText("2");
   await page.getByLabel("搜索菜品").fill("");
@@ -50,7 +51,7 @@ test("手动点餐、搜索分类、份数、刷新恢复、食堂内下单与�
   await cart.getByRole("button", { name: `移除${name}`, exact: true }).click();
   await cart.getByRole("button", { name: "提交订单", exact: true }).click();
   await expect(cart.getByText(/订单 #\d+ 已提交/)).toBeVisible();
-  const orders = await (await page.request.get("/api/orders")).json();
+  const orders = await (await tabApi(page).get("/api/orders")).json();
   expect(orders).toHaveLength(1);
   expect(orders[0].items).toHaveLength(1);
   expect(orders[0].items[0].quantity).toBe(2);
@@ -104,7 +105,7 @@ test("AI 生成不改变手动购物车，选用套餐整体覆盖后可继续�
 }) => {
   test.skip(process.env.CAMPUS_MODEL_FIXTURE !== "1", "需要模型协议夹具");
   await openCanteen(page);
-  await page.request.put("/api/profile", {
+  await tabApi(page).put("/api/profile", {
     data: {
       name: "食堂体验学生",
       age: 22,
@@ -118,10 +119,10 @@ test("AI 生成不改变手动购物车，选用套餐整体覆盖后可继续�
   });
   await page.reload();
   await page.getByRole("button", { name: "加入米饭", exact: true }).click();
-  const before = await (await page.request.get("/api/cart")).json();
-  await page.getByRole("button", { name: "生成三个膳食方案" }).click();
+  const before = await (await tabApi(page).get("/api/cart")).json();
+  await page.getByRole("button", { name: "生成膳食方案" }).click();
   await expect(page.locator(".meal-card")).toHaveCount(3);
-  expect((await (await page.request.get("/api/cart")).json()).plan.id).toBe(
+  expect((await (await tabApi(page).get("/api/cart")).json()).plan.id).toBe(
     before.plan.id,
   );
   await page
@@ -134,7 +135,7 @@ test("AI 生成不改变手动购物车，选用套餐整体覆盖后可继续�
   await expect(cart.locator(".cart-items li")).toHaveCount(3);
   expect(
     (
-      await page.request.post("/api/orders", {
+      await tabApi(page).post("/api/orders", {
         data: { token: before.plan.checkoutToken },
       })
     ).status(),

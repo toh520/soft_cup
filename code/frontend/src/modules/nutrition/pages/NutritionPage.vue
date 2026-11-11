@@ -10,10 +10,13 @@ import DishMenu from "../components/DishMenu.vue";
 import CanteenCart from "../components/CanteenCart.vue";
 const { user } = useAuth();
 const {
+  requirements,
   readiness,
   dishes,
   plans,
   target,
+  requirementsSummary,
+  recommendationNotice,
   cart,
   loading,
   recommending,
@@ -57,8 +60,49 @@ function showCart() {
         <p>
           结合身体信息与饮食偏好，<br
             class="desktop-break"
-          />从今日菜品里挑出三个均衡方案。
+          />从今日菜品里挑出符合要求的搭配。
         </p>
+        <label class="meal-requirements">
+          <span>本次用餐要求（选填）</span>
+          <textarea
+            v-model="requirements"
+            maxlength="300"
+            rows="2"
+            :disabled="recommending"
+            placeholder="例如：有荤有素，2菜一汤，主食是米饭"
+            aria-describedby="meal-requirements-help"
+          ></textarea>
+          <small id="meal-requirements-help"
+            >仅用于本次推荐，仍遵循个人忌口。{{
+              requirements.length
+            }}/300</small
+          >
+        </label>
+        <div class="meal-presets" aria-label="用餐要求示例">
+          <button
+            type="button"
+            :disabled="recommending"
+            @click="requirements = '米饭，两菜一汤，一荤一素'"
+          >
+            两菜一汤
+          </button>
+          <button
+            type="button"
+            :disabled="recommending"
+            @click="requirements = '全素，米饭两菜一汤'"
+          >
+            素食搭配
+          </button>
+          <button
+            type="button"
+            :disabled="recommending"
+            @click="
+              requirements = '米饭，两菜一汤，一荤一素，总热量不超过850千卡'
+            "
+          >
+            不超过850千卡
+          </button>
+        </div>
         <div class="ai-hero-actions">
           <button
             class="ai-generate"
@@ -66,7 +110,7 @@ function showCart() {
             @click="recommend"
           >
             <AppIcon name="sparkle" :size="18" />{{
-              recommending ? "正在搭配这一餐…" : "生成三个膳食方案"
+              recommending ? "正在搭配这一餐…" : "生成膳食方案"
             }}<AppIcon v-if="!recommending" name="arrow" :size="18" /></button
           ><span v-if="target">本餐目标约 {{ target }} kcal</span
           ><span v-else-if="readiness?.ready"
@@ -76,7 +120,7 @@ function showCart() {
       </div>
       <div class="ai-hero-art">
         <DishArtwork hero /><span class="plate-caption"
-          >一份主食 · 一份蛋白 · 一份蔬菜</span
+          >主食 · 荤素搭配 · 暖汤</span
         >
       </div>
     </section>
@@ -97,7 +141,13 @@ function showCart() {
       <span class="waiting-orbit"></span>
       <div>
         <strong>正在从今日菜品中为你搭配</strong>
-        <p>通常需要十几秒，等待时也可以继续浏览和手动点餐。</p>
+        <p>
+          {{
+            requirements.trim()
+              ? "附带要求时需先理解你的需求，可能需要约一分钟。"
+              : "通常需要十几秒。"
+          }}等待时也可以继续浏览和手动点餐。
+        </p>
       </div>
     </div>
     <section v-if="plans.length" class="recommendation-section">
@@ -106,10 +156,14 @@ function showCart() {
           <span class="section-kicker"
             ><AppIcon name="sparkle" :size="16" />为你推荐</span
           >
-          <h2>三种搭配，挑一餐喜欢的。</h2>
+          <h2>{{ plans.length }}种搭配，挑一餐喜欢的。</h2>
         </div>
         <p>选用套餐将直接替换购物车中的菜品。</p>
       </div>
+      <p class="meal-conditions">本次搭配条件：{{ requirementsSummary }}</p>
+      <p v-if="recommendationNotice" class="meal-conditions" role="status">
+        {{ recommendationNotice }}
+      </p>
       <div class="meal-grid">
         <MealPlanCard
           v-for="(plan, index) in plans"

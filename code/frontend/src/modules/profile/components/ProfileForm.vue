@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/composables/useAuth.js";
 import FeedbackMessage from "../../../shared/components/FeedbackMessage.vue";
 const props = defineProps({ profile: Object });
 const { user } = useAuth();
+const emit = defineEmits(["saved"]);
 const form = reactive(
   Object.fromEntries(
     [
@@ -38,6 +39,7 @@ async function save() {
     for (const field of ["age", "sex", "heightCm", "weightKg", "activityLevel"])
       if (body[field] === "") body[field] = null;
     user.value = await profileApi.save(body);
+    emit("saved", user.value);
     message.value = "个人资料已保存。可返回营养食堂重新推荐。";
   } catch (e) {
     error.value = e.message;

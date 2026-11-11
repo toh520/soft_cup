@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
   padding: 10px 13px;
   background: #fff;
 }
@@ -20,7 +20,7 @@
   border-radius: 50%;
   color: #fff;
   background: #2848a5;
-  font-size: 10px;
+  font-size: 12px;
 }
 .ai-dining-hero {
   position: relative;
@@ -40,10 +40,12 @@
   align-items: center;
   gap: 8px;
   color: #becdf3;
-  font-size: 10px;
+  font-size: 12px;
   margin-bottom: 18px;
 }
 .ai-hero-copy {
+  width: 480px;
+  max-width: 100%;
   position: relative;
   z-index: 1;
 }
@@ -56,7 +58,7 @@
   letter-spacing: 2px;
 }
 .ai-hero-copy > p {
-  font-size: 11px;
+  font-size: 12px;
   color: #b6c5eb;
   line-height: 2;
   margin-bottom: 22px;
@@ -81,7 +83,7 @@
 }
 .ai-hero-actions > span {
   color: #aebfe8;
-  font-size: 10px;
+  font-size: 12px;
 }
 .ai-hero-art {
   position: absolute;
@@ -99,7 +101,7 @@
   margin-top: -5px;
   text-align: center;
   color: #abbfe9;
-  font-size: 10px;
+  font-size: 12px;
   transform: rotate(7deg);
 }
 .profile-nudge {
@@ -121,18 +123,18 @@
 }
 .profile-nudge strong {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: #506588;
 }
 .profile-nudge p > span {
   display: block;
   color: #8594ad;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 4px;
 }
 .profile-nudge .button {
-  font-size: 10px;
+  font-size: 12px;
   padding: 9px 12px;
   background: #fff;
   white-space: nowrap;
@@ -151,7 +153,7 @@
   font-size: 12px;
 }
 .recommendation-wait p {
-  font-size: 10px;
+  font-size: 12px;
   color: #8594ad;
   margin: 5px 0 0;
 }
@@ -184,7 +186,7 @@
   align-items: center;
   gap: 6px;
   color: #6681b2;
-  font-size: 10px;
+  font-size: 12px;
   margin-bottom: 9px;
 }
 .recommendation-heading h2 {
@@ -195,7 +197,7 @@
 .recommendation-heading > p {
   margin: 0;
   color: #6e7d94;
-  font-size: 10px;
+  font-size: 12px;
 }
 .meal-grid {
   display: grid;
@@ -220,11 +222,11 @@
   align-items: center;
   gap: 5px;
   color: #7e91b5;
-  font-size: 10px;
+  font-size: 12px;
 }
 .meal-plan-energy {
   color: #6e7d94;
-  font-size: 9px;
+  font-size: 12px;
 }
 .meal-plan-energy b {
   color: #354e80;
@@ -261,7 +263,7 @@
   background: #f0f5f6;
   border-radius: 3px;
   padding: 3px 5px;
-  font-size: 8px;
+  font-size: 12px;
 }
 .meal-plan-dishes strong {
   font-weight: 400;
@@ -269,7 +271,7 @@
 }
 .meal-plan-dishes small {
   margin-left: auto;
-  font-size: 9px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .meal-plan-macros {
@@ -278,14 +280,14 @@
   gap: 6px;
   margin: 16px 0;
   color: #6f7d94;
-  font-size: 10px;
+  font-size: 12px;
 }
 .select-plan {
   background: #edf1fc;
   color: #4966a5;
   border-color: #e7ecf7;
   padding: 10px 14px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .select-plan:hover {
   background: #e2e9fb;
@@ -314,7 +316,7 @@
   margin: 0;
 }
 .menu-heading .text-button {
-  font-size: 11px;
+  font-size: 12px;
   color: #8193b0;
 }
 .menu-tools {
@@ -334,7 +336,7 @@
   padding: 8px 13px;
   background: transparent;
   border-color: transparent;
-  font-size: 10px;
+  font-size: 12px;
   color: #66758e;
   border-radius: 7px;
 }
@@ -359,7 +361,7 @@
   border: 0;
   box-shadow: none;
   padding: 9px 0;
-  font-size: 10px;
+  font-size: 12px;
 }
 .dish-grid {
   display: grid;
@@ -400,14 +402,14 @@
   color: #59836a;
   background: #ffffffd9;
   border-radius: 4px;
-  font-size: 8px;
+  font-size: 12px;
 }
 .dish-selected {
   position: absolute;
   bottom: 8px;
   right: 9px;
   padding: 4px 7px;
-  font-size: 8px;
+  font-size: 12px;
   background: #2848a5;
   color: #fff;
   border-radius: 4px;
@@ -424,7 +426,7 @@
   display: flex;
   justify-content: space-between;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: #6b7890;
   margin-bottom: 6px;
 }
@@ -434,7 +436,7 @@
 }
 .dish-ingredients {
   color: #748198;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -447,7 +449,7 @@
   margin-top: 12px;
 }
 .dish-card-footer > span {
-  font-size: 10px;
+  font-size: 12px;
   color: #6d7d97;
 }
 button.add-dish {
@@ -491,7 +493,7 @@ button.add-dish:hover {
 }
 .cart-count {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   color: #5874af;
   background: #edf1fc;
   border-radius: 5px;
@@ -504,11 +506,11 @@ button.add-dish:hover {
   height: 42px;
   padding-left: 30px;
   color: #748098;
-  font-size: 11px;
+  font-size: 12px;
   border-bottom: 1px solid #edf1f7;
 }
 .cart-source button {
-  font-size: 9px;
+  font-size: 12px;
   color: #8d9bb4;
 }
 .cart-empty {
@@ -534,7 +536,7 @@ button.add-dish:hover {
   margin-bottom: 7px;
 }
 .cart-empty p {
-  font-size: 11px;
+  font-size: 12px;
   color: #77849b;
   margin: 0;
 }
@@ -576,7 +578,7 @@ button.remove-dish {
   gap: 10px;
 }
 .cart-item-detail small {
-  font-size: 11px;
+  font-size: 12px;
   color: #738098;
 }
 .quantity-control {
@@ -594,7 +596,7 @@ button.remove-dish {
   color: #6b7ca1;
 }
 .quantity-control span {
-  font-size: 11px;
+  font-size: 12px;
   min-width: 10px;
   text-align: center;
   color: #526789;
@@ -609,7 +611,7 @@ button.remove-dish {
   gap: 10px;
 }
 .cart-energy > span {
-  font-size: 11px;
+  font-size: 12px;
   color: #8b9ab2;
 }
 .cart-energy strong {
@@ -618,7 +620,7 @@ button.remove-dish {
   color: #364e7e;
 }
 .cart-energy small {
-  font-size: 9px;
+  font-size: 12px;
   color: #91a1bd;
   font-weight: 400;
 }
@@ -627,7 +629,7 @@ button.remove-dish {
   justify-content: space-between;
   gap: 10px;
   margin-top: 15px;
-  font-size: 8px;
+  font-size: 12px;
   color: #a1aec4;
 }
 .cart-macros b {
@@ -635,7 +637,7 @@ button.remove-dish {
   margin-top: 5px;
   color: #7186a8;
   font-weight: 500;
-  font-size: 10px;
+  font-size: 12px;
 }
 .cart-bottom {
   margin-top: 15px;
@@ -646,13 +648,13 @@ button.remove-dish {
   font-size: 12px;
 }
 .cart-bottom p {
-  font-size: 10px;
+  font-size: 12px;
   text-align: center;
   margin: 10px 0 0;
   color: #78859b;
 }
 .canteen-cart .notice {
-  font-size: 10px;
+  font-size: 12px;
   padding: 11px 12px;
 }
 .canteen-footnote {
@@ -660,7 +662,7 @@ button.remove-dish {
   align-items: start;
   gap: 7px;
   margin: 30px 0 0;
-  font-size: 10px;
+  font-size: 12px;
   color: #6f7d94;
   line-height: 1.9;
 }
@@ -767,7 +769,7 @@ button.remove-dish {
   }
   .cart-jump {
     padding: 8px 11px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .cart-jump > svg {
     width: 15px;
@@ -786,10 +788,10 @@ button.remove-dish {
   }
   .ai-feature-label {
     margin-bottom: 15px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .ai-hero-copy > p {
-    font-size: 10px;
+    font-size: 12px;
     margin-bottom: 24px;
     max-width: 230px;
   }
@@ -807,10 +809,10 @@ button.remove-dish {
   }
   .ai-generate {
     padding: 13px 16px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .ai-hero-actions > span {
-    font-size: 9px;
+    font-size: 12px;
   }
   .profile-nudge {
     padding: 15px;
@@ -841,7 +843,7 @@ button.remove-dish {
   }
   .category-tabs button {
     flex: 1;
-    font-size: 10px;
+    font-size: 12px;
     padding: 9px;
   }
   .dish-grid {
@@ -861,13 +863,13 @@ button.remove-dish {
     font-size: 13px;
   }
   .dish-portion {
-    font-size: 10px;
+    font-size: 12px;
   }
   .dish-ingredients {
-    font-size: 9px;
+    font-size: 12px;
   }
   .dish-card-footer > span {
-    font-size: 9px;
+    font-size: 12px;
   }
   .canteen-cart {
     padding: 22px;
@@ -885,20 +887,20 @@ button.remove-dish {
     font-size: 13px;
   }
   .cart-item-detail small {
-    font-size: 10px;
+    font-size: 12px;
   }
   .quantity-control button {
     width: 30px;
     height: 30px;
   }
   .cart-bottom p {
-    font-size: 9px;
+    font-size: 12px;
   }
   .cart-source {
-    font-size: 10px;
+    font-size: 12px;
   }
   .cart-macros {
-    font-size: 10px;
+    font-size: 12px;
   }
   .cart-macros b {
     font-size: 12px;
@@ -907,6 +909,41 @@ button.remove-dish {
     font-size: 12px;
   }
   .canteen-footnote {
-    font-size: 9px;
+    font-size: 12px;
   }
+}
+
+.meal-requirements {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0 18px;
+  max-width: 480px;
+}
+.meal-requirements > span {
+  font-weight: 600;
+}
+.meal-requirements textarea {
+  width: 100%;
+  min-height: 82px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid #bacfc8;
+  border-radius: 12px;
+  background: #fff;
+  color: #203149;
+  font: inherit;
+}
+.meal-requirements small {
+  color: #dbe6ff;
+}
+.dish-picture.soup {
+  background: #f7ecd9;
+}
+
+.meal-conditions {
+  color: #425677;
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  margin: 0 0 16px;
 }

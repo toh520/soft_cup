@@ -24,7 +24,16 @@ code/   backend 后端、frontend 前端，以及测试、SQL、提示词、构�
 
 ## 运行与配置
 
-Windows 可直接双击 `code/start-campus.cmd`。首次没有 JAR 时自动安装前端依赖、构建前后端并启动；已有 JAR 时直接启动。启动成功会打开浏览器，重复点击复用已运行服务。需要 JDK 21；首次构建还需要 Maven 3.9.9 和 Node.js 22。
+Windows x64 新电脑首次使用：
+
+1. 完整下载或拉取仓库，双击 `code/setup-campus.cmd` 配置依赖。
+2. 配置成功后双击 `code/start-campus.cmd`，等待首次构建并自动打开网页。
+
+配置脚本优先复用已有 JDK 21、Node.js 22.12+/24（含 npm）、Maven 3.9.x；缺失时从官方地址下载便携 ZIP，校验后解压到当前用户 `%LOCALAPPDATA%/campus-build-tools`。不需要管理员权限，不修改系统或用户的永久 PATH、代理、注册表。npm/Maven 会按正常规则写入各自的依赖缓存。首次配置需要联网。
+
+启动脚本逐个验证 Java 版本，自动跳过 Java 17，继续寻找已有 JDK 21。没有 JAR 时自动安装前端依赖、构建前后端并启动；已有 JAR 时直接启动。重复点击复用已运行服务。发生错误时显示失败阶段和处理提示，失败窗口保留；可用 `code\setup-campus.cmd -CheckOnly` 只检查环境。
+
+配置脚本不提供模型密钥。首次只复制空密钥模板，已有私有配置保持不变；AI 功能需填写 `code/backend/config/application-local.properties`，新库还需由管理员重建知识向量。普通手动点餐和数据管理可先使用。
 
 停止：`code\start-campus.cmd -Stop`；修改源码后重新构建：先停止，再运行 `code\start-campus.cmd -Rebuild`。脚本不修改数据库内容，私有配置仍从后端 `config/application-local.properties` 加载。
 

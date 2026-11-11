@@ -62,4 +62,38 @@ class ModelClientTest {
         .isInstanceOf(BusinessException.class)
         .hasMessageContaining("尚未配置");
   }
+
+  @Test
+  void nutritionRetriesInvalidJsonOnceButNeverRetriesTimeoutOrAcceptsTrailingContent()
+      throws Exception {
+    var transport = mock(ModelTransport.class);
+    var client =
+        new ChatModelClient(
+            transport, mapper, new JsonSupport(mapper), "http://localhost", "demo", "private", 30);
+    var malformed = mapper.readTree("{\"choices\":[{\"message\":{\"content\":\"not JSON\"}}]}");
+    var valid = mapper.readTree("{\"choices\":[{\"message\":{\"content\":\"{}\"}}]}");
+    when(transport.post(anyString(), anyString(), anyString(), any(), anyInt()))
+        .thenReturn(malformed, valid);
+    assertThat(client.complete("nutrition/requirements", java.util.Map.of()).isObject()).isTrue();
+    verify(transport, times(2)).post(anyString(), anyString(), anyString(), any(), anyInt());
+    reset(transport);
+    when(transport.post(anyString(), anyString(), anyString(), any(), anyInt()))
+        .thenReturn(malformed);
+    assertThatThrownBy(() -> client.complete("nutrition/recommend", java.util.Map.of()))
+        .hasMessageContaining("结构无效");
+    verify(transport, times(2)).post(anyString(), anyString(), anyString(), any(), anyInt());
+    reset(transport);
+    when(transport.post(anyString(), anyString(), anyString(), any(), anyInt()))
+        .thenThrow(new BusinessException(504, "模型服务超时"));
+    assertThatThrownBy(() -> client.complete("nutrition/requirements", java.util.Map.of()))
+        .hasMessageContaining("超时");
+    verify(transport, times(1)).post(anyString(), anyString(), anyString(), any(), anyInt());
+    reset(transport);
+    var trailing = mapper.readTree("{\"choices\":[{\"message\":{\"content\":\"{} {}\"}}]}");
+    when(transport.post(anyString(), anyString(), anyString(), any(), anyInt()))
+        .thenReturn(trailing);
+    assertThatThrownBy(() -> client.complete("assistant/intent", java.util.Map.of()))
+        .hasMessageContaining("结构无效");
+    verify(transport, times(1)).post(anyString(), anyString(), anyString(), any(), anyInt());
+  }
 }

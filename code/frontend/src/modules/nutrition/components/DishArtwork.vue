@@ -26,7 +26,27 @@ const color = computed(() => greens[Number(props.variant) % greens.length]);
       stroke="#e6e9e1"
       stroke-width="2"
     />
-    <g v-if="kind === 'staple'">
+    <g v-if="kind === 'soup'">
+      <path d="M67 83 Q70 140 120 141 Q170 140 173 83Z" fill="#9ccbc6" />
+      <ellipse
+        cx="120"
+        cy="83"
+        rx="53"
+        ry="25"
+        fill="#d99b49"
+        stroke="#e7f1ec"
+        stroke-width="7"
+      />
+      <ellipse cx="105" cy="79" rx="14" ry="7" fill="#ecf0cd" />
+      <ellipse cx="138" cy="89" rx="12" ry="6" fill="#7b9b65" />
+      <path
+        d="M104 55 Q95 43 106 31 M131 53 Q121 41 133 29"
+        stroke="#9aaea2"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+    </g>
+    <g v-else-if="kind === 'staple'">
       <ellipse
         cx="120"
         cy="86"

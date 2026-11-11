@@ -73,13 +73,13 @@ class CampusIntegrationTest {
     var response =
         call("/auth/login", "POST", null, Map.of("account", account, "password", password));
     assertThat(response.getStatusCode().value()).isEqualTo(200);
-    return response.getHeaders().getFirst("Set-Cookie").split(";", 2)[0];
+    return (String) map(response.getBody()).get("token");
   }
 
-  ResponseEntity<Object> call(String path, String method, String cookie, Object body) {
+  ResponseEntity<Object> call(String path, String method, String credential, Object body) {
     var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
-    if (cookie != null) headers.set("Cookie", cookie);
+    if (credential != null) headers.setBearerAuth(credential);
     return http.exchange(
         "/api" + path,
         HttpMethod.valueOf(method),
@@ -87,8 +87,8 @@ class CampusIntegrationTest {
         Object.class);
   }
 
-  Object ok(String path, String method, String cookie, Object body) {
-    var response = call(path, method, cookie, body);
+  Object ok(String path, String method, String credential, Object body) {
+    var response = call(path, method, credential, body);
     assertThat(response.getStatusCode().value()).as(path + " " + response.getBody()).isEqualTo(200);
     return response.getBody();
   }
@@ -1061,5 +1061,351 @@ class CampusIntegrationTest {
       assertThat(map(map(ok("/cart", "GET", student, null)).get("plan")).get("source"))
           .isEqualTo("manual");
     }
+  }
+
+  @Test
+  void independentTokensLogoutAndLegacyCookiesCannotSwitchIdentity() {
+    var first = map(ok("/profile", "GET", student, null));
+    var second = map(ok("/profile", "GET", other, null));
+    assertThat(first.get("id")).isNotEqualTo(second.get("id"));
+    var headers = new HttpHeaders();
+    headers.set("Cookie", "CAMPUS_SESSION=" + admin);
+    assertThat(
+            http.exchange("/api/profile", HttpMethod.GET, new HttpEntity<>(headers), Object.class)
+                .getStatusCode()
+                .value())
+        .isEqualTo(401);
+    headers.setBearerAuth(student);
+    var result =
+        http.exchange("/api/profile", HttpMethod.GET, new HttpEntity<>(headers), Object.class);
+    assertThat(map(result.getBody()).get("id")).isEqualTo(first.get("id"));
+    assertThat(result.getHeaders().getCacheControl()).isEqualTo("no-store");
+    assertThat(call("/profile", "GET", "forged", null).getStatusCode().value()).isEqualTo(401);
+    assertThat(
+            call("/auth/login", "POST", student, Map.of("account", "admin", "password", "wrong"))
+                .getStatusCode()
+                .value())
+        .isEqualTo(401);
+    ok("/auth/logout", "POST", student, null);
+    assertThat(call("/profile", "GET", student, null).getStatusCode().value()).isEqualTo(401);
+    assertThat(map(ok("/profile", "GET", other, null)).get("id")).isEqualTo(second.get("id"));
+    ok("/admin/students", "GET", admin, null);
+  }
+
+  Map<String, Object> requirementConstraints(long stapleId, int soupCount, int meatCount) {
+    var constraints = new LinkedHashMap<String, Object>();
+    constraints.put("stapleCount", 1);
+    constraints.put("sideCount", 2);
+    constraints.put("soupCount", soupCount);
+    constraints.put("meatCount", meatCount);
+    constraints.put("stapleIds", List.of(stapleId));
+    constraints.put("requiredDishIds", List.of());
+    constraints.put("excludedDishIds", List.of());
+    constraints.put("vegetarianOnly", false);
+    constraints.put("message", "");
+    constraints.put("veganOnly", false);
+    constraints.put("requiredAnyGroups", List.of());
+    constraints.put("excludedIngredients", List.of());
+    constraints.put("nutritionLimits", Map.of());
+    return constraints;
+  }
+
+  @Test
+  void requestedSoupMealSurvivesCartAndOrderAndCannotBeUsedByOtherSession() {
+    ok("/profile", "PUT", student, profile());
+    var menu = list(ok("/nutrition/dishes", "GET", student, null));
+    long stapleId =
+        number(
+            menu.stream()
+                .filter(d -> d.get("category").equals("staple"))
+                .findFirst()
+                .orElseThrow()
+                .get("id"));
+    when(chat.complete(eq("nutrition/requirements"), any()))
+        .thenReturn(mapper.valueToTree(requirementConstraints(stapleId, 1, 1)));
+    mockPlans();
+    var response =
+        map(
+            ok(
+                "/nutrition/recommendations",
+                "POST",
+                student,
+                Map.of("requirements", "两菜一汤，一荤一素，主食米饭")));
+    var plans = list(response.get("plans"));
+    assertThat(plans).hasSize(3);
+    for (var plan : plans) {
+      var selected = list(plan.get("dishes"));
+      assertThat(selected).hasSize(4);
+      assertThat(selected.stream().filter(d -> d.get("category").equals("soup"))).hasSize(1);
+      assertThat(selected.stream().filter(d -> d.get("category").equals("staple")))
+          .extracting(d -> number(d.get("id")))
+          .containsExactly(stapleId);
+      assertThat(
+              selected.stream()
+                  .filter(d -> List.of("protein", "vegetable").contains(d.get("category")))
+                  .filter(d -> !Boolean.TRUE.equals(d.get("isVegetarian"))))
+          .hasSize(1);
+      assertThat(map(plan.get("totals")))
+          .isEqualTo(
+              com.toh520.campus.module.nutrition.service.MealCandidateService.totals(selected));
+    }
+    String planId = (String) plans.getFirst().get("id");
+    assertThat(call("/cart", "PUT", other, Map.of("planId", planId)).getStatusCode().value())
+        .isEqualTo(409);
+    var cart = map(ok("/cart", "PUT", student, Map.of("planId", planId)));
+    var plan = map(cart.get("plan"));
+    assertThat(list(plan.get("dishes"))).hasSize(4);
+    ok("/orders", "POST", student, Map.of("token", plan.get("checkoutToken")));
+    assertThat(list(list(ok("/orders", "GET", student, null)).getFirst().get("items"))).hasSize(4);
+    assertThat(list(ok("/orders", "GET", other, null))).isEmpty();
+  }
+
+  @Test
+  void requirementValidationAndIncompleteProfileDoNotCallModel() {
+    for (Object body :
+        List.of(
+            Map.of("requirements", "字".repeat(301)),
+            Map.of("requirements", List.of("米饭")),
+            Map.of("requirements", "米饭", "userId", 1)))
+      assertThat(call("/nutrition/recommendations", "POST", student, body).getStatusCode().value())
+          .isEqualTo(400);
+    assertThat(
+            call("/nutrition/recommendations", "POST", student, Map.of("requirements", "两菜一汤"))
+                .getStatusCode()
+                .value())
+        .isEqualTo(400);
+    assertThat(
+            call("/nutrition/recommendations", "POST", admin, Map.of("requirements", "米饭"))
+                .getStatusCode()
+                .value())
+        .isEqualTo(403);
+    verifyNoInteractions(chat);
+  }
+
+  @Test
+  void whitespaceRequirementsKeepDefaultAndDoNotChangeProfile() {
+    ok("/profile", "PUT", student, profile());
+    var before = ok("/profile", "GET", student, null);
+    mockPlans();
+    var plans =
+        list(
+            map(ok("/nutrition/recommendations", "POST", student, Map.of("requirements", "  ")))
+                .get("plans"));
+    assertThat(plans).allSatisfy(plan -> assertThat(list(plan.get("dishes"))).hasSize(3));
+    verify(chat, never()).complete(eq("nutrition/requirements"), any());
+    assertThat(ok("/profile", "GET", student, null)).isEqualTo(before);
+  }
+
+  @Test
+  void parserFailureAndDietConflictKeepManualCart() {
+    var body = profile();
+    body.put("dietPreference", "vegetarian");
+    body.put("avoidedIngredients", List.of("鸡蛋"));
+    ok("/profile", "PUT", student, body);
+    var menu = list(ok("/nutrition/dishes", "GET", student, null));
+    long stapleId =
+        number(
+            menu.stream()
+                .filter(d -> d.get("category").equals("staple"))
+                .findFirst()
+                .orElseThrow()
+                .get("id"));
+    var cart = ok("/cart/items/" + stapleId, "PUT", student, Map.of("quantity", 2));
+    when(chat.complete(eq("nutrition/requirements"), any()))
+        .thenAnswer(
+            invocation -> {
+              var suppliedMenu =
+                  list(((Map<String, Object>) invocation.getArgument(1)).get("menu"));
+              assertThat(suppliedMenu)
+                  .allSatisfy(
+                      d -> {
+                        assertThat(d.get("isVegetarian")).isEqualTo(true);
+                        assertThat((List<String>) d.get("ingredientTags")).doesNotContain("鸡蛋");
+                      });
+              return mapper.valueToTree(requirementConstraints(stapleId, 1, 1));
+            });
+    assertThat(
+            call("/nutrition/recommendations", "POST", student, Map.of("requirements", "来荤菜"))
+                .getStatusCode()
+                .value())
+        .isEqualTo(400);
+    verify(chat, never()).complete(eq("nutrition/recommend"), any());
+    assertThat(ok("/cart", "GET", student, null)).isEqualTo(cart);
+    when(chat.complete(eq("nutrition/requirements"), any()))
+        .thenThrow(new BusinessException(504, "模型服务超时"));
+    assertThat(
+            call("/nutrition/recommendations", "POST", student, Map.of("requirements", "米饭"))
+                .getStatusCode()
+                .value())
+        .isEqualTo(504);
+    assertThat(ok("/cart", "GET", student, null)).isEqualTo(cart);
+  }
+
+  @Test
+  void adminCanManageSoupAndUnavailableSoupCannotBeRecommended() {
+    var dish =
+        new LinkedHashMap<String, Object>(
+            Map.of(
+                "name",
+                "测试紫菜汤",
+                "category",
+                "soup",
+                "portionG",
+                250,
+                "energyKcal",
+                80,
+                "proteinG",
+                4,
+                "fatG",
+                2,
+                "carbohydrateG",
+                10,
+                "ingredientTags",
+                List.of("紫菜"),
+                "isVegetarian",
+                true,
+                "isAvailable",
+                true));
+    ok("/admin/dishes", "POST", admin, dish);
+    var saved =
+        list(ok("/admin/dishes", "GET", admin, null)).stream()
+            .filter(d -> d.get("name").equals("测试紫菜汤"))
+            .findFirst()
+            .orElseThrow();
+    long id = number(saved.get("id"));
+    dish.put("isAvailable", false);
+    ok("/admin/dishes/" + id, "PUT", admin, dish);
+    assertThat(list(ok("/nutrition/dishes", "GET", student, null)))
+        .noneMatch(d -> number(d.get("id")) == id);
+    ok("/admin/dishes/" + id, "DELETE", admin, null);
+  }
+
+  @Test
+  void fullySpecifiedMenuReturnsOnePlanAndPreservesEveryRequestedDish() {
+    ok("/profile", "PUT", student, profile());
+    mockPlans();
+    var original =
+        list(map(ok("/nutrition/recommendations", "POST", student, null)).get("plans")).getFirst();
+    var selected = list(original.get("dishes"));
+    long staple =
+        number(
+            selected.stream()
+                .filter(d -> d.get("category").equals("staple"))
+                .findFirst()
+                .orElseThrow()
+                .get("id"));
+    var constraints = requirementConstraints(staple, 0, -1);
+    constraints.put("requiredDishIds", selected.stream().map(d -> d.get("id")).toList());
+    when(chat.complete(eq("nutrition/requirements"), any()))
+        .thenReturn(mapper.valueToTree(constraints));
+    var response =
+        map(ok("/nutrition/recommendations", "POST", student, Map.of("requirements", "只要指定的三道菜")));
+    var plans = list(response.get("plans"));
+    assertThat(plans).hasSize(1);
+    assertThat(response.get("notice")).asString().contains("仅有1种");
+    assertThat(response.get("requirementsSummary")).asString().contains("必含");
+    assertThat(list(plans.getFirst().get("dishes"))).containsExactlyInAnyOrderElementsOf(selected);
+    var cart = map(ok("/cart", "PUT", student, Map.of("planId", plans.getFirst().get("id"))));
+    ok("/orders", "POST", student, Map.of("token", map(cart.get("plan")).get("checkoutToken")));
+    assertThat(list(list(ok("/orders", "GET", student, null)).getFirst().get("items"))).hasSize(3);
+  }
+
+  @Test
+  void numericRequirementsApplyBeforeModelSelectionAndAreReportedToUser() {
+    ok("/profile", "PUT", student, profile());
+    mockPlans();
+    long staple =
+        number(
+            list(ok("/nutrition/dishes", "GET", student, null)).stream()
+                .filter(d -> d.get("category").equals("staple"))
+                .findFirst()
+                .orElseThrow()
+                .get("id"));
+    var constraints = requirementConstraints(staple, 1, 1);
+    constraints.put(
+        "nutritionLimits",
+        Map.of(
+            "energyKcal",
+            Map.of("min", 700, "max", 850),
+            "proteinG",
+            Map.of("min", 40, "max", 100)));
+    when(chat.complete(eq("nutrition/requirements"), any()))
+        .thenReturn(mapper.valueToTree(constraints));
+    var response =
+        map(
+            ok(
+                "/nutrition/recommendations",
+                "POST",
+                student,
+                Map.of("requirements", "米饭两菜一汤，700到850千卡，蛋白质40到100克")));
+    for (var plan : list(response.get("plans"))) {
+      assertThat(((Number) map(plan.get("totals")).get("energyKcal")).doubleValue())
+          .isBetween(700.0, 850.0);
+      assertThat(((Number) map(plan.get("totals")).get("proteinG")).doubleValue())
+          .isBetween(40.0, 100.0);
+    }
+    assertThat(response.get("requirementsSummary")).asString().contains("850", "40");
+  }
+
+  @Test
+  void menuChangeDuringGenerationRejectsStaleRecommendation() throws Exception {
+    ok("/profile", "PUT", student, profile());
+    var entered = new CountDownLatch(1);
+    var release = new CountDownLatch(1);
+    var selectedName = new java.util.concurrent.atomic.AtomicReference<String>();
+    when(chat.complete(eq("nutrition/recommend"), any()))
+        .thenAnswer(
+            invocation -> {
+              var input = (Map<String, Object>) invocation.getArgument(1);
+              var candidates = list(input.get("candidates"));
+              selectedName.set(
+                  (String) list(candidates.getFirst().get("dishes")).getFirst().get("name"));
+              entered.countDown();
+              if (!release.await(10, TimeUnit.SECONDS)) throw new IllegalStateException("测试超时");
+              return mapper.valueToTree(
+                  Map.of(
+                      "plans",
+                      candidates.stream()
+                          .limit(3)
+                          .map(c -> Map.of("candidateId", c.get("candidateId"), "reason", "合法候选"))
+                          .toList()));
+            });
+    try (var executor = Executors.newSingleThreadExecutor()) {
+      var future = executor.submit(() -> call("/nutrition/recommendations", "POST", student, null));
+      assertThat(entered.await(5, TimeUnit.SECONDS)).isTrue();
+      jdbc.update("UPDATE dishes SET energy_kcal=energy_kcal+1 WHERE name=?", selectedName.get());
+      try {
+        release.countDown();
+        assertThat(future.get(10, TimeUnit.SECONDS).getStatusCode().value()).isEqualTo(409);
+        assertThat(map(ok("/cart", "GET", student, null)).get("empty")).isEqualTo(true);
+      } finally {
+        release.countDown();
+        jdbc.update("UPDATE dishes SET energy_kcal=energy_kcal-1 WHERE name=?", selectedName.get());
+      }
+    }
+  }
+
+  @Test
+  void librarySearchIgnoresWhitespaceButTreatsWildcardsLiterally() {
+    var spaced = list(ok("/books?query=Java 程序设计", "GET", student, null));
+    var compact = list(ok("/books?query=Java程序设计", "GET", student, null));
+    assertThat(spaced).isNotEmpty();
+    assertThat(compact).containsExactlyElementsOf(spaced);
+    String title = "空白\t检索　案例";
+    ok(
+        "/admin/books",
+        "POST",
+        admin,
+        Map.of("title", title, "author", "测试作者", "summary", "空格检索", "availableCount", 1));
+    assertThat(list(ok("/books?query=空白检索案例", "GET", student, null)))
+        .anyMatch(book -> title.equals(book.get("title")));
+    ok(
+        "/admin/books",
+        "POST",
+        admin,
+        Map.of("title", "通配%_!案例", "author", "测试作者", "summary", "字面搜索", "availableCount", 1));
+    var literal = list(ok("/books?query=%_!", "GET", student, null));
+    assertThat(literal).hasSize(1);
+    assertThat(literal.getFirst().get("title")).isEqualTo("通配%_!案例");
   }
 }

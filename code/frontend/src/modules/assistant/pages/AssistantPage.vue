@@ -6,15 +6,24 @@ import CourseTable from "../../../shared/components/CourseTable.vue";
 import LeaveRequestCard from "../components/LeaveRequestCard.vue";
 import BookBorrowCard from "../components/BookBorrowCard.vue";
 import { useAssistantConversation } from "../composables/useAssistantConversation.js";
+import AppIcon from "../../../shared/components/AppIcon.vue";
+import { sessionGeneration } from "../../../shared/api/tab-session.js";
 const { messages, busy, error, send, clear } = useAssistantConversation();
 const text = ref(""),
   list = ref(null);
 async function submit(value = text.value) {
-  if (!value.trim()) return;
+  if (busy.value || !value.trim()) return;
+  const generation = sessionGeneration();
   text.value = "";
-  await send(value);
+  const sent = await send(value);
+  if (sent === false && generation === sessionGeneration()) text.value = value;
   await nextTick();
-  list.value?.scrollTo({ top: list.value.scrollHeight, behavior: "smooth" });
+  list.value?.scrollTo({
+    top: list.value.scrollHeight,
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth",
+  });
 }
 </script>
 <template>
@@ -25,18 +34,37 @@ async function submit(value = text.value) {
     ><button :disabled="busy" @click="clear">新对话</button></PageHeading
   >
   <section class="chat-panel">
-    <div ref="list" class="message-list">
+    <div
+      ref="list"
+      class="message-list"
+      role="log"
+      aria-live="polite"
+      aria-label="对话记录"
+    >
       <div v-if="!messages.length" class="chat-welcome">
         <div class="assistant-symbol">知</div>
         <h2>今天有什么需要帮忙？</h2>
         <p class="muted">
           请假、借书、查课表，从一句话开始。<br />所有申请和借阅，都由你核对后确认。
         </p>
-        <div class="suggestions">
-          <button @click="submit('我想请假')">我想请假 ↗</button
-          ><button @click="submit('查询 Java 程序设计的图书')">
-            找一本 Java 图书 ↗</button
-          ><button @click="submit('我今天有什么课？')">今天的课表 ↗</button>
+        <div class="suggestions service-suggestions">
+          <button @click="submit('我想请假')">
+            <AppIcon name="calendar" :size="22" /><span
+              ><strong>申请请假</strong
+              ><small>填写草稿，核对后提交</small></span
+            >
+          </button>
+          <button @click="submit('查询 Java 程序设计的图书')">
+            <AppIcon name="knowledge" :size="22" /><span
+              ><strong>查找图书</strong><small>查询馆藏，确认借阅</small></span
+            >
+          </button>
+          <button @click="submit('我今天有什么课？')">
+            <AppIcon name="calendar" :size="22" /><span
+              ><strong>今天的课表</strong
+              ><small>查看课程、时间与教室</small></span
+            >
+          </button>
         </div>
       </div>
       <article
@@ -75,7 +103,7 @@ async function submit(value = text.value) {
         required
         maxlength="1000"
         :disabled="busy"
-      /><button class="primary" :disabled="busy || !text.trim()">发送 ↑</button>
+      /><button class="primary" :disabled="busy || !text.trim()">发送</button>
     </form>
     <p class="composer-note">办理事务请在卡片中确认 · 校园规定请前往知识问答</p>
   </section>

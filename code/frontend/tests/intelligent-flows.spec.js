@@ -1,16 +1,17 @@
+import { tabApi } from "./tab-api.js";
 import { test, expect } from "@playwright/test";
 // 此组需显式启用测试模型的后端；普通未配置模型的演示服务不会运行它。
 test.skip(process.env.CAMPUS_MODEL_FIXTURE !== "1", "需要独立测试模型协议夹具");
 async function login(page) {
   const account = `A${Date.now()}`;
-  await page.request.post("/api/auth/register", {
+  await tabApi(page).post("/api/auth/register", {
     data: {
       name: "智能流程学生",
       studentNumber: account,
       password: "campus123",
     },
   });
-  await page.request.post("/api/auth/login", {
+  await tabApi(page).post("/api/auth/login", {
     data: { account, password: "campus123" },
   });
   await page.goto("/#/assistant");
@@ -31,7 +32,7 @@ test("完整对话卡片、显式确认、购物车订单与真实向量协议",
   await page.getByRole("button", { name: "发送" }).click();
   await expect(page.getByText("请补充具体起止时间和理由。")).toBeVisible();
   expect(
-    await (await page.request.get("/api/leave-requests")).json(),
+    await (await tabApi(page).get("/api/leave-requests")).json(),
   ).toHaveLength(0);
   await input.fill("补充时间和理由");
   await page.getByRole("button", { name: "发送" }).click();
@@ -45,14 +46,14 @@ test("完整对话卡片、显式确认、购物车订单与真实向量协议",
   await page.getByRole("button", { name: "确认提交", exact: true }).click();
   await expect(page.getByText(/已提交，等待管理员审批/)).toBeVisible();
   expect(
-    await (await page.request.get("/api/leave-requests")).json(),
+    await (await tabApi(page).get("/api/leave-requests")).json(),
   ).toHaveLength(1);
   await input.fill("查询Java图书");
   await page.getByRole("button", { name: "发送" }).click();
   await page.getByRole("button", { name: "选择此书" }).first().click();
   await page.getByRole("button", { name: "确认借书", exact: true }).click();
   await expect(page.getByText("借书成功，可在个人中心归还。")).toBeVisible();
-  await page.request.put("/api/profile", {
+  await tabApi(page).put("/api/profile", {
     data: {
       name: "智能流程学生",
       age: 22,
@@ -65,19 +66,19 @@ test("完整对话卡片、显式确认、购物车订单与真实向量协议",
     },
   });
   await page.getByRole("link", { name: "智能营养食堂" }).click();
-  await page.getByRole("button", { name: "生成三个膳食方案" }).click();
+  await page.getByRole("button", { name: "生成膳食方案" }).click();
   await expect(page.locator(".meal-card")).toHaveCount(3);
   await page.getByRole("button", { name: "选用套餐" }).first().click();
   await expect(
     page.getByRole("heading", { name: "本餐购物车", exact: true }),
   ).toBeVisible();
-  expect(await (await page.request.get("/api/orders")).json()).toHaveLength(0);
+  expect(await (await tabApi(page).get("/api/orders")).json()).toHaveLength(0);
   await page.getByRole("button", { name: "提交订单" }).click();
   await expect(page.getByText(/订单 #\d+ 已提交/)).toBeVisible();
-  expect(await (await page.request.get("/api/orders")).json()).toHaveLength(1);
+  expect(await (await tabApi(page).get("/api/orders")).json()).toHaveLength(1);
   const admin = await browser.newContext();
   const adminPage = await admin.newPage();
-  await adminPage.request.post("/api/auth/login", {
+  await tabApi(adminPage).post("/api/auth/login", {
     data: { account: "admin", password: "123456" },
   });
   await adminPage.goto("/#/admin/knowledge-entries");

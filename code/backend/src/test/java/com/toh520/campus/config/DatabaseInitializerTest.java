@@ -19,6 +19,7 @@ class DatabaseInitializerTest {
 
   DatabaseInitializer initializer() {
     var source = new SQLiteDataSource();
+    source.setEnforceForeignKeys(true);
     source.setUrl("jdbc:sqlite:" + directory.resolve("campus.db"));
     jdbc = new JdbcTemplate(source);
     return new DatabaseInitializer(
@@ -36,7 +37,7 @@ class DatabaseInitializerTest {
     assertThat(jdbc.queryForObject("SELECT count(*) FROM books", Integer.class)).isEqualTo(10);
     assertThat(jdbc.queryForObject("SELECT count(*) FROM class_schedules", Integer.class))
         .isEqualTo(10);
-    assertThat(jdbc.queryForObject("SELECT count(*) FROM dishes", Integer.class)).isEqualTo(16);
+    assertThat(jdbc.queryForObject("SELECT count(*) FROM dishes", Integer.class)).isEqualTo(19);
     assertThat(
             jdbc.queryForObject(
                 "SELECT count(*) FROM knowledge_entries WHERE embedding_model='pending'",
@@ -75,6 +76,18 @@ class DatabaseInitializerTest {
     jdbc.update(
         "INSERT INTO order_items(order_id,dish_id,dish_name,portion_g,energy_kcal,protein_g,fat_g,carbohydrate_g) VALUES (1,1,'旧菜品快照',200,350,8,2,72)");
     jdbc.update("INSERT INTO schema_migrations(version) VALUES (1)");
+    jdbc.update("UPDATE sqlite_sequence SET seq=1000 WHERE name='dishes'");
+    jdbc.update("UPDATE sqlite_sequence SET seq=2000 WHERE name='order_items'");
+    initializer.run(null);
+    assertThat(jdbc.queryForList("PRAGMA foreign_key_check")).isEmpty();
+    assertThat(
+            jdbc.queryForObject(
+                "SELECT seq FROM sqlite_sequence WHERE name='order_items'", Long.class))
+        .isEqualTo(2000L);
+    assertThat(jdbc.queryForObject("SELECT min(id) FROM dishes WHERE category='soup'", Long.class))
+        .isGreaterThan(1000L);
+    assertThatThrownBy(() -> jdbc.update("DELETE FROM dishes WHERE id=1"))
+        .isInstanceOf(org.springframework.dao.DataAccessException.class);
     initializer.run(null);
     assertThat(jdbc.queryForObject("SELECT name FROM users WHERE account='20260001'", String.class))
         .isEqualTo("已有姓名");
@@ -93,7 +106,7 @@ class DatabaseInitializerTest {
     assertThat(
             jdbc.queryForList(
                 "SELECT version FROM schema_migrations ORDER BY version", Integer.class))
-        .containsExactly(1, 2, 3, 4);
+        .containsExactly(1, 2, 3, 4, 5);
     assertThat(
             jdbc.queryForObject("SELECT quantity FROM order_items WHERE order_id=1", Integer.class))
         .isEqualTo(1);

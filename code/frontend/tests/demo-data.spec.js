@@ -1,7 +1,8 @@
+import { tabApi } from "./tab-api.js";
 import { test, expect } from "@playwright/test";
 
 test("演示账号可登录，管理员可查看原密码及待向量化资料", async ({ page }) => {
-  const login = await page.request.post("/api/auth/login", {
+  const login = await tabApi(page).post("/api/auth/login", {
     data: { account: "admin", password: "123456" },
   });
   expect(login.ok()).toBeTruthy();
@@ -23,8 +24,8 @@ test("演示账号可登录，管理员可查看原密码及待向量化资料",
   await page.locator("nav").getByRole("link", { name: "个人中心" }).click();
   await expect(page.getByLabel("姓名", { exact: true })).toHaveValue("林悦");
   await expect(page.getByLabel("饮食偏好")).toHaveValue("vegetarian");
-  const profile = await (await page.request.get("/api/profile")).json();
+  const profile = await (await tabApi(page).get("/api/profile")).json();
   expect(profile).not.toHaveProperty("password");
-  const access = await page.request.get("/api/admin/students");
+  const access = await tabApi(page).get("/api/admin/students");
   expect(access.status()).toBe(403);
 });
